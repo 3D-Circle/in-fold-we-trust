@@ -1,0 +1,16 @@
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# node
+node_modules/
+
+# idea
+.idea/

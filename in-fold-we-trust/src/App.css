@@ -1,0 +1,33 @@
+body {
+    background: whitesmoke;
+}
+
+/* Table */
+table {
+    border-collapse: collapse;
+    margin: 10px;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+td.cell {
+    padding: 10px;
+}
+
+/* Individual Amino acids */
+div.aa {
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+}
+
+div.aa.black {
+    background: black;
+}
+
+div.aa.white {
+    border: 2px solid black;
+    background: white;
+}
