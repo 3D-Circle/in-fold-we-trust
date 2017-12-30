@@ -9,18 +9,23 @@ table {
 }
 
 table, th, td {
-    border: 1px solid black;
+    border-width: 0px;
+    text-align: center;
 }
 
-td.cell {
-    padding: 10px;
+
+td.aa-cell {
+    height: 25px;
+    width: 25px;
+    font-size: 0;
 }
 
 /* Individual Amino acids */
 div.aa {
     width: 10px;
     height: 10px;
-    border-radius: 10px;
+    /* border-radius: 10px; */
+    display: inline-block;
 }
 
 div.aa.black {
@@ -31,3 +36,23 @@ div.aa.white {
     border: 2px solid black;
     background: white;
 }
+
+/* links */
+div.link {
+    background: red;
+    width: 5px;
+    height: 10px;
+    display: inline-block;
+    vertical-align: 4px;
+}
+
+div.link.tall {
+    width: 5px;
+    height: 30px;
+}
+
+div.link.wide {
+    width: 30px;
+    height: 5px;
+}
+
