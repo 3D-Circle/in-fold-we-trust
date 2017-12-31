@@ -4,18 +4,38 @@ import './App.css';
 const aminos = "HPHHPPPH";
 
 
+/* --- Utility functions --- */
+
 function flatConfigFromSequence(seq) {
     let grid = 	Array(seq.length + 2)
 	.fill().map(()=>Array(seq.length + 2).fill()); // to avoid the [None] * x syndrome
-    let aminoCoordList = {};
+    let aminoCoordObj = {};
     let middle = Math.floor(seq.length / 2);
     seq.split("").map((element, x) => {
 	grid[x + 1][middle] = element;
-	aminoCoordList["" + x + middle] = element;
-    }); 
-    return [aminoCoordList, grid];
+	aminoCoordObj["" + (x + 1) + middle] = element;
+    }); // its raising warning about not returning anything, should we care ?
+    return [aminoCoordObj, grid];
 }
 
+
+function linkLocationGen(aminoCoordObj) {
+    // returns: list of coords of each link
+    let result = [];
+    let allCoords = Object.keys(aminoCoordObj);
+    allCoords.map(
+	(key, index) => {
+	    if (index !== allCoords.length) {
+		result.push("" + key + allCoords[index + 1]);
+	    }
+	}
+    );
+    return result;
+}
+
+
+
+/* --- Componenents --- */
 
 class App extends Component {
     render() {
@@ -47,9 +67,11 @@ class FoldingBoard extends Component {
 	    return [...Array(gridSize*2 - 1)].map(
 		(_, x) => {
 		    let tds = [];
-		    if ((y % 2 == 0) && (x % 2 == 0)) {
-			let elementInside = this.state.grid[x/2][y/2] !== undefined ?
-			    <div className="aa white"></div> : undefined;
+		    if ((y % 2 === 0) && (x % 2 === 0)) {
+			// checking if there is an AA at this location of the grid
+			let gridElementAtPos = this.state.grid[x/2][y/2];
+			let elementInside =  gridElementAtPos !== undefined ?
+			    <AminoAcid hp={gridElementAtPos}/> : undefined;
 
 			tds.push(
 			    <div key={"" + x + y} className="td aa-cell">
@@ -57,17 +79,24 @@ class FoldingBoard extends Component {
 			    </div>
 			);
 		    } else if ((x % 2) !== (y % 2)) {
-			let customClass = (y % 2 == 0) ? "wide" : "tall";
-			let joins;
-			if (y % 2 == 0) {
-			    joins = [(x-1)/2, y/2, "-to-", (x+1)/2, y/2].join("");
+			let orientationClass = (y % 2 === 0) ? "wide" : "tall";
+			let joins = linkLocationGen(this.state.aminoCoordsList);
+			
+			let singleLink;
+			if (y % 2 === 0) {
+			    singleLink = ["" + (x-1)/2 + y/2, "" + (x+1)/2 + y/2];
 			} else {
-			    joins = [x/2, (y-1)/2, "-to-", x/2, (y+1)/2].join("");
+			    singleLink = ["" + x/2 + (y-1)/2, "" + x/2 + (y+1)/2];
 			}
-			console.log(joins);
+			
+			let linkIsActive = joins.includes(singleLink.join(""))
+			    || joins.includes([...singleLink].reverse().join(""));
+			
 			tds.push( // TODO: shrink the links
 			    <div key={"" + x + y} className="td aa-link">  
-			      <div className={"link " + customClass + " " + joins}></div>
+				<div className={
+				    ["link", orientationClass, linkIsActive ? "active" : ""].join(" ")
+				}></div>
 			    </div>
 			);
 		    } else {
@@ -98,7 +127,7 @@ class FoldingBoard extends Component {
 class AminoAcid extends Component {
     render() {
         return (
-	    <div className={"aa " + this.props.color}></div>
+	    <div className={"aa " + this.props.hp}></div>
 	);
     }
 }

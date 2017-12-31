@@ -2,10 +2,10 @@ body {
     background: whitesmoke;
 }
 
+/* table */
 .tr {
     height: 25px;
 }
-
 
 .td {
     display: inline-block;
@@ -14,8 +14,7 @@ body {
 }
 
 .td.aa-cell {
-    border: 1px solid blue;
-    box-sizing: border-box;
+    border: 1px solid black;
 }
 
 .td.aa-link {
@@ -25,14 +24,23 @@ body {
     position: relative;
 }
 
+/* amino acid */
 div.aa {
     height: 25px;
+    width: 25px;
+}
+
+div.aa.P {
     background: green;
 }
 
-div.link {
-    background: red;
+div.aa.H {
+    background: blue;
+}
 
+/* links */
+div.link.active {
+    background: red;
 }
 
 div.link.tall {
