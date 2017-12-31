@@ -14,7 +14,9 @@ flatConfigFromSequence("HPHPHP");
 class App extends Component {
     render() {
 	return (
-	    <FoldingBoard gridSize={this.props.gridSize}/>
+	    <div id="wrapper">
+	      <FoldingBoard gridSize={this.props.gridSize}/>
+	    </div>
 	);
     }
 }
@@ -35,19 +37,19 @@ class FoldingBoard extends Component {
 		    let tds = [];
 		    if ((y % 2 == 0) && (x % 2 == 0)) {	
 			tds.push(
-			    <td key={"" + x + y} className="aa-cell">
+			    <div key={"" + x + y} className="td aa-cell">
 			      <div className="aa white"></div>
-			    </td>
+			    </div>
 			);
 		    } else if ((x % 2) !== (y % 2)) {
 			let customClass = (y % 2 == 0) ? "wide" : "tall";
 			tds.push(
-			    <td key={"" + x + y} className="aa-link">
+			    <div key={"" + x + y} className="td aa-link">
 			      <div className={"link " + customClass}></div>
-			    </td>
+			    </div>
 			);
 		    } else {
-			tds.push(<td key={"" + x + y} className="empty"></td>);
+			tds.push(<div key={"" + x + y} className="td empty"></div>);
 		    }
 		    return tds;
 		}	    
@@ -56,22 +58,16 @@ class FoldingBoard extends Component {
 
 	for (let y = 0; y < gridSize*2 - 1; y++) {
 	    result.push(
-		<tr key={"row" + y}>
+		<div key={"row" + y} className="tr">
 		  {tdFactory(y, gridSize)}
-		</tr>
+		</div>
 	    );
 	}
 	return result;
     }
     
     render() {
-	return (
-	    <table>
-	    <tbody>
-	      {this.createGrid(10, [])}
-	    </tbody>
-	    </table>
-	);
+	return this.createGrid(10, []);
     }
 }
 

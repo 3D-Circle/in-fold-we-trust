@@ -2,57 +2,44 @@ body {
     background: whitesmoke;
 }
 
-/* Table */
-table {
-    border-collapse: collapse;
-    margin: 10px;
-}
-
-table, th, td {
-    border-width: 0px;
-    text-align: center;
+.tr {
+    height: 25px;
 }
 
 
-td.aa-cell {
+.td {
+    display: inline-block;
     height: 25px;
     width: 25px;
-    font-size: 0;
 }
 
-/* Individual Amino acids */
-div.aa {
-    width: 10px;
-    height: 10px;
-    /* border-radius: 10px; */
-    display: inline-block;
+.td.aa-cell {
+    border: 1px solid blue;
+    box-sizing: border-box;
 }
 
-div.aa.black {
-    background: black;
+.td.aa-link {
+    /* display: inline-flex; */
+    /* justify-content: center; */
+    /* align-items: center;  */
+    position: relative;
 }
 
-div.aa.white {
-    border: 2px solid black;
-    background: white;
-}
-
-/* links */
 div.link {
     background: red;
-    width: 5px;
-    height: 10px;
-    display: inline-block;
-    vertical-align: 4px;
+
 }
 
 div.link.tall {
     width: 5px;
-    height: 30px;
+    height: 25px;
+    margin: 0 auto;
 }
 
 div.link.wide {
-    width: 30px;
+    width: 25px;
     height: 5px;
+    position: absolute;
+    top: 50%; left: 49%;
+    transform: translate(-50%,-50%);
 }
-
