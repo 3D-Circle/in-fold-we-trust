@@ -16,7 +16,7 @@ const vectorFromPoints = (from, to) =>
       [to[0] - from[0], to[1] - from[1]];
 
 const compareArrays = (a1, a2) =>
-      (a1.length == a2.length) && a1.every((v, i) => v === a2[i]);
+      (a1.length === a2.length) && a1.every((v, i) => v === a2[i]);
 
 const vectorWheel = [[1, 0], [0, -1], [-1, 0], [0, 1]];
 const vectorWheelPos = (v) =>
@@ -33,14 +33,14 @@ function configFromSequence(seq, random=false) {
     let middle = Math.floor(seq.length / 2);
 
     if (random) {
-	let currentX = middle;
-	let currentY = middle;
-	let increments = [0, 1];
-	for (let c of seq.split("")) {
+	// let currentX = middle;
+	// let currentY = middle;
+	// let increments = [0, 1];
+	// for (let c of seq.split("")) {
 	    // TODO
-	}
+	// }
     } else {
-	seq.split("").map((element, x) => {
+	seq.split("").forEach((element, x) => {
 	    grid[x + 1][middle] = element;
 	    aminoCoordMap.set([(x + 1), middle].join("-"), element);
 	}); // its raising warning about not returning anything, should we care ?
@@ -66,7 +66,7 @@ function linkLocationGen(aminoCoordMap) {
     // returns: list of coords of each link
     let result = [];
     let allCoords = Array.from(aminoCoordMap.keys());
-    allCoords.map((key, index) => {
+    allCoords.forEach((key, index) => {
 	if (index !== allCoords.length - 1) {
 	    result.push([key, allCoords[index + 1]].join("--"));  // TODO when changing strings change this
 	}
@@ -106,14 +106,14 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
 
 	// current coords
 	let oldCurrentAminoCoords;
-	if (index == 0) {
+	if (index === 0) {
 	    oldCurrentAminoCoords = aaRotationPoint;
 	} else {
 	    oldCurrentAminoCoords = aminosToRotate[index - 1];
 	}
-	oldCurrentAminoCoords = oldCurrentAminoCoords.split("-").map((x) => parseInt(x));
+	oldCurrentAminoCoords = oldCurrentAminoCoords.split("-").map((x) => parseInt(x, 10));
 	// next coords
-	let oldNextAminoCoords = nextAmino.split("-").map((x) => parseInt(x));
+	let oldNextAminoCoords = nextAmino.split("-").map((x) => parseInt(x, 10));
 
 	// old vector
 	let oldVectorToNext = vectorFromPoints(oldCurrentAminoCoords, oldNextAminoCoords);
@@ -131,7 +131,7 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
     });
     console.log(newVectors);
 
-    let currentPoint = aaRotationPoint.split("-").map((x) => parseInt(x));
+    let currentPoint = aaRotationPoint.split("-").map((x) => parseInt(x, 10));
     let newAminoChain = new Map();
     let newPoint;
     let rotationPossible = true;
@@ -155,14 +155,14 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
 	leftOverAminos.forEach((c) => {
 	    leftOverAminosMap.set(c, aminoCoordMap.get(c)); 
 	});
-	if (traverseDirection == -1) {
+	if (traverseDirection === -1) {
 	    // reverse + stick the new ones at the start
 	    fullAminoChain = new Map([...Array.from(newAminoChain.entries()).reverse(), ...leftOverAminosMap]);
-	} else if (traverseDirection == 1) {
+	} else if (traverseDirection === 1) {
 	    // stick the new ones at the end
 	    fullAminoChain = new Map([...leftOverAminosMap, ...newAminoChain]);
 	} else {
-	    throw "THIS SHOULD NEVER HAPPEN";
+	    throw new Error("THIS SHOULD NEVER HAPPEN");
 	}
 	return fullAminoChain;
     } else {
@@ -236,8 +236,7 @@ class FoldingBoard extends Component {
 			
 			tds.push( // TODO: shrink the links
 				<div key={"" + x + y} className={["td", "aa-link", orientationClass].join(" ")}>  
-				<div className={["link", linkIsActive ? "active" : ""].join(" ")}>
-				</div>
+				<div className={["link", linkIsActive ? "active" : ""].join(" ")}/>
 				</div>
 			);
 		    } else {
