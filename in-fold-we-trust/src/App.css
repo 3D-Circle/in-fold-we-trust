@@ -15,6 +15,7 @@ body {
 
 .td.aa-cell {
     border: 1px solid black;
+    text-align: center;
 }
 
 .td.aa-link {
@@ -22,6 +23,10 @@ body {
     /* justify-content: center; */
     /* align-items: center;  */
     position: relative;
+}
+
+.td.empty {
+    width: 27px;  /* to compensate for border */
 }
 
 /* amino acid */
@@ -57,3 +62,15 @@ div.link.active {
     transform: translate(-50%,-50%);
 }
  
+/* folding indicators */
+.folding-indicator {
+    height: 9px;
+    width: 9px;
+    position: relative;
+    top: 7.5px;
+    left: 7.5px;
+}
+
+.folding-indicator.active {
+    background: orange;
+}

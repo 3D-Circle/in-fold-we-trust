@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { configFromSequence, linkLocationGen, aminos } from './foldUtils.js';
 import './App.css';
+
 
 
 class App extends Component {
@@ -23,7 +25,8 @@ class FoldingBoard extends Component {
 	this.state = {
 	    aminoCoordsList: r[0],
 	    grid: r[1],
-	    rotationIndicators: []
+	    foldingIndicators: [],
+	    foldingStep: "normal"  // "normal", "chooseRotation", "choseDirection"
 	};
     }
 
@@ -32,7 +35,7 @@ class FoldingBoard extends Component {
     }
 
     
-    createGrid(gridSize, coords) {
+    createGrid(gridSize) {
 	let result = [];
 	let tdFactory = (y, gridSize) => {
 	    return [...Array(gridSize*2 - 1)].map(
@@ -41,14 +44,7 @@ class FoldingBoard extends Component {
 		    if ((y % 2 === 0) && (x % 2 === 0)) {
 			// checking if there is an AA at this location of the grid
 			let gridElementAtPos = this.state.grid[x/2][y/2];
-			let elementInside =  gridElementAtPos !== undefined ?
-			    <AminoAcid hp={gridElementAtPos}/> : undefined;
-
-			tds.push(
-			    <div key={"" + x + y} className="td aa-cell">
-			      {elementInside}
-			    </div>
-			);
+			tds.push(<AminoAcidCell key={"" + x + y} hp={gridElementAtPos}/>);
 		    } else if ((x % 2) !== (y % 2)) {
 			let orientationClass = (y % 2 === 0) ? "wide" : "tall";
 			let joins = linkLocationGen(this.state.aminoCoordsList);	
@@ -86,10 +82,33 @@ class FoldingBoard extends Component {
     }
     
     render() {
-	return this.createGrid(10, []);
+	return this.createGrid(10);
     }
 }
 
+FoldingBoard.propTypes = {
+    gridSize: PropTypes.number.isRequired,
+    aminoString: PropTypes.string.isRequired
+};
+
+
+class AminoAcidCell extends Component {
+    constructor(props) {
+	super();
+    }
+
+    render() {
+	return (
+	    <div className="td aa-cell">
+	      {this.props.hp !== undefined ? <AminoAcid hp={this.props.hp}/> : <FoldingIndicator/>}
+	    </div>
+	);
+    }
+}
+
+AminoAcidCell.propTypes = {
+    hp: PropTypes.string
+};
 
 
 class AminoAcid extends Component {
@@ -99,7 +118,7 @@ class AminoAcid extends Component {
     }
 
     onAminoAcidClick() {
-	console.log("BABA YETU");
+	
     }
     
     render() {
@@ -108,5 +127,23 @@ class AminoAcid extends Component {
 	);
     }
 }
+
+AminoAcid.propTypes = {
+    coords: PropTypes.array.isRequired,
+    hp: PropTypes.string.isRequired
+};
+
+
+class FoldingIndicator extends Component {
+    render() {
+	return (
+	    <div className="folding-indicator"></div>
+	);
+    }
+}
+
+FoldingIndicator.propTypes = {
+    direction: PropTypes.isRequired  // either +1 or -1
+};
 
 export default App;
