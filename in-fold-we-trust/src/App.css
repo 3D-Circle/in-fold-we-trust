@@ -43,16 +43,17 @@ div.link.active {
     background: red;
 }
 
-div.link.tall {
+.td.tall > .link {
     width: 5px;
     height: 25px;
     margin: 0 auto;
 }
 
-div.link.wide {
+.td.wide > .link {
     width: 25px;
     height: 5px;
     position: absolute;
-    top: 50%; left: 49%;
+    top: 47.5%; left: 49%;  /* compensate for the thickness of the link TODO: fix the tiny displacements*/
     transform: translate(-50%,-50%);
 }
+ 
