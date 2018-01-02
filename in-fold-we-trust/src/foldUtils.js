@@ -75,37 +75,48 @@ function linkLocationGen(aminoCoordMap) {
 }
 
 
-function getFoldingIndicators(_aaOrigin, _aaRotationPoint, gridSize) {
+function getFoldingIndicators(_aaOrigin, _aaRotationPoint, gridSize, directionValidity) {
     // TODO optimize in terms in space
+    // direction validity is a map with +1 || -1 --> something not undefined || undefined
     let aaOrigin = _aaOrigin.split("-").map((x) => parseInt(x, 10));
     let aaRotationPoint = _aaRotationPoint.split("-").map((x) => parseInt(x, 10));
     let foldingIndicatorCoords = new Map();
+    let direction;
+    console.log("DIRECTION VALIDITY");
+    console.log(directionValidity);
     if (aaOrigin[0] === aaRotationPoint[0]) {
 	if (aaRotationPoint[0] + 1 < gridSize) {
-	    console.log("rotation to the right side");
-	    foldingIndicatorCoords.set(
-		(aaRotationPoint[0] + 1) + "-" + aaRotationPoint[1],
-		aaOrigin[1] < aaRotationPoint[1] ? -1 : 1
-	    );
+	    direction = aaOrigin[1] < aaRotationPoint[1] ? -1 : 1;
+	    if (directionValidity.get(direction) !== undefined) {
+		foldingIndicatorCoords.set(
+		    (aaRotationPoint[0] + 1) + "-" + aaRotationPoint[1], direction
+		);
+	    }
 	}
 	if (aaRotationPoint[0] - 1 >= 0) {
-	    foldingIndicatorCoords.set(
-		(aaRotationPoint[0] - 1) + "-" + aaRotationPoint[1],
-		aaOrigin[1] < aaRotationPoint[1] ? 1 : -1
-	    );
+	    direction = aaOrigin[1] < aaRotationPoint[1] ? 1 : -1;
+	    if (directionValidity.get(direction) !== undefined) {
+		foldingIndicatorCoords.set(
+		    (aaRotationPoint[0] - 1) + "-" + aaRotationPoint[1], direction
+		);
+	    }
 	}
     } else if (aaOrigin[1] === aaRotationPoint[1]) {
 	if (aaRotationPoint[1] + 1 < gridSize) {
-	    foldingIndicatorCoords.set(
-		aaRotationPoint[0] + "-" + (aaRotationPoint[1] + 1),
-		aaOrigin[0] < aaRotationPoint[0] ? 1 : -1
-	    );
+	    direction = aaOrigin[0] < aaRotationPoint[0] ? 1 : -1;
+	    if (directionValidity.get(direction) !== undefined) {
+		foldingIndicatorCoords.set(
+		    aaRotationPoint[0] + "-" + (aaRotationPoint[1] + 1), direction
+		);
+	    }
 	}
 	if (aaRotationPoint[1] - 1 >= 0) {
-	    foldingIndicatorCoords.set(
-		aaRotationPoint[0] + "-" + (aaRotationPoint[1] - 1),
-		aaOrigin[0] < aaRotationPoint[0] ? -1 : 1
-	    );
+	    direction = aaOrigin[0] < aaRotationPoint[0] ? -1 : 1;
+	    if (directionValidity.get(direction) !== undefined) {
+		foldingIndicatorCoords.set(
+		    aaRotationPoint[0] + "-" + (aaRotationPoint[1] - 1), direction
+		);
+	    }
 	}
     }
     return foldingIndicatorCoords;
@@ -175,7 +186,12 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
 	newAminoChain.set(newPoint.join("-"), aaNature);
 	currentPoint = newPoint;
 	// checks if the new point is inside the grid
-	let outOfBounds = newPoint.findIndex((x) => x < 0 || x >= gridSize) > -1;
+	let outOfBounds = newPoint.findIndex(
+	    (x) => x < 0 || x >= gridSize
+	) > -1;
+	if (outOfBounds) {
+	    console.log("this thing is out of bounds !");
+	}
 	if ((aminoCoordMap.get(newPoint.join("-")) !== undefined) || outOfBounds)  {
 	    rotationPossible = false;
 	    // TODO could we immediately break here ?
@@ -198,6 +214,8 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
 	} else {
 	    throw new Error("THIS SHOULD NEVER HAPPEN");
 	}
+	console.log("AMINO CHAIN AFTER FOLD");
+	console.log(fullAminoChain);
 	return fullAminoChain;
     } else {
 	console.log("Rotation impossible !");

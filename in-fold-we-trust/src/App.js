@@ -28,6 +28,7 @@ class FoldingBoard extends Component {
 	this.aminoClick = this.aminoClick.bind(this);
 	this.generateFoldingIndicators = this.generateFoldingIndicators.bind(this);
 	this.foldingIndicatorClick = this.foldingIndicatorClick.bind(this);
+	this.resetToNormalState = this.resetToNormalState.bind(this);
 	
 	let r = configFromSequence(this.props.aminoString);
 	this.state = {
@@ -66,24 +67,38 @@ class FoldingBoard extends Component {
 	    direction,
 	    this.state.grid.length
 	)]));
-
+	
 	// generate the positions for folding indicators
-	let positions = getFoldingIndicators(this.state.selectedAmino, this.state.rotationAmino, this.state.grid.length);
-	this.setState({
-	    foldingIndicators: positions,
-	    currentPossibleRotations: possibleRotations
-	});
+	console.log("POSSIBLE ROTATIONS");
+	console.log(possibleRotations);
+	let positions = getFoldingIndicators(
+	    this.state.selectedAmino, this.state.rotationAmino,
+	    this.state.grid.length, possibleRotations
+	);
+
+	if (positions.size === 0) {
+	    this.resetToNormalState();
+	} else {
+	    console.log("CURRENT FOLDING INDICATORS");
+	    console.log(positions);
+	    this.setState({
+		foldingIndicators: positions,
+		currentPossibleRotations: possibleRotations
+	    });
+	}
     }
 
     foldingIndicatorClick(direction) {
-	console.log("Folding in " + direction);
 	let newAminos = this.state.currentPossibleRotations.get(direction);
-	console.log("the new aminos");
-	console.log(newAminos);
 	this.setState({
 	    aminoCoordMap: newAminos,
-	    grid: gridFromCoordMap(newAminos, this.state.grid.length),
-	    // we reset everything
+	    grid: gridFromCoordMap(newAminos, this.state.grid.length)
+	}, this.resetToNormalState);  // we reset to step 0
+    }
+
+    resetToNormalState() {
+	console.log("RESET TO NORMAL STATE");
+	this.setState({
 	    foldingIndicators: new Map(),
 	    currentPossibleRotations: new Map(),
 	    foldingStep: "normal",  // "normal", "chooseRotation", "choseDirection"
@@ -95,7 +110,6 @@ class FoldingBoard extends Component {
     createGrid(gridSize) {
 	let result = [];
 	let joins = linkLocationGen(this.state.aminoCoordMap);
-	console.log(joins);
 	let tdFactory = (y, gridSize) => {
 	    return [...Array(gridSize*2 - 1)].map((_, x) => {
 		let tds = [];
@@ -105,7 +119,6 @@ class FoldingBoard extends Component {
 		    let isActive = false;
 		    if (this.state.selectedAmino === x/2 + "-" + y/2) {
 			isActive = true;
-			console.log("the active one is " + x/2 + "-" + y/2);
 		    }
 		    let foldingIndicatorDirection = this.state.foldingIndicators.get(x/2 + "-" + y/2);
 		    tds.push(
@@ -126,9 +139,7 @@ class FoldingBoard extends Component {
 		    }
 		    let linkIsActive = joins.includes(singleLink.join("--"))
 			|| joins.includes([...singleLink].reverse().join("--"));
-		    if (linkIsActive) {
-			console.log(orientationClass);
-		    }
+
 		    tds.push( // TODO: shrink the links
 			    <div key={"" + x + y} className={["td", "aa-link", orientationClass].join(" ")}>  
 			    <div className={["link", linkIsActive ? "active" : ""].join(" ")}/>
