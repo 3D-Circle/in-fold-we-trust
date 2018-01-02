@@ -1,8 +1,12 @@
+/*
+  Functions to calculate folding stuff
+*/
+
 
 const aminos = "HPHHPPPH";
 const testCoords = new Map([["1-1", "H"], ["1-2", "P"], ["2-2", "H"], ["2-3", "H"]]);
 
-/* --- Utility functions --- */
+
 const empty2dArray = (n) =>
       Array(n).fill().map(()=>Array(n).fill()); // to avoid the [None] * x syndrome
 
@@ -47,18 +51,16 @@ function configFromSequence(seq, random=false) {
 }
 
 
-function gridFromCoordMap(aminoCoordMap) {
+function gridFromCoordMap(aminoCoordMap, gridSize) {
     // this will blindly follow the coordinates specified in the obj
-    let grid = empty2dArray(aminoCoordMap.size);
-    for (let aa of aminoCoordMap.keys) {
-	let coords = ("" + aa).split(""); // TODO replace by lists instead of string
+    let grid = empty2dArray(gridSize);
+    for (let aa of aminoCoordMap.keys()) {
+	let coords = aa.split("-"); // TODO replace by lists instead of string
 	grid[coords[0]][coords[1]] = aminoCoordMap.get(aa);
     }
     return grid;
 }
 
-
-// console.log(gridFromCoordObj(testCoords));
 
 function linkLocationGen(aminoCoordMap) {
     // returns: list of coords of each link
@@ -73,10 +75,46 @@ function linkLocationGen(aminoCoordMap) {
 }
 
 
+function getFoldingIndicators(_aaOrigin, _aaRotationPoint, gridSize) {
+    // TODO optimize in terms in space
+    let aaOrigin = _aaOrigin.split("-").map((x) => parseInt(x, 10));
+    let aaRotationPoint = _aaRotationPoint.split("-").map((x) => parseInt(x, 10));
+    let foldingIndicatorCoords = new Map();
+    if (aaOrigin[0] === aaRotationPoint[0]) {
+	if (aaRotationPoint[0] + 1 < gridSize) {
+	    console.log("rotation to the right side");
+	    foldingIndicatorCoords.set(
+		(aaRotationPoint[0] + 1) + "-" + aaRotationPoint[1],
+		aaOrigin[1] < aaRotationPoint[1] ? -1 : 1
+	    );
+	}
+	if (aaRotationPoint[0] - 1 >= 0) {
+	    foldingIndicatorCoords.set(
+		(aaRotationPoint[0] - 1) + "-" + aaRotationPoint[1],
+		aaOrigin[1] < aaRotationPoint[1] ? 1 : -1
+	    );
+	}
+    } else if (aaOrigin[1] === aaRotationPoint[1]) {
+	if (aaRotationPoint[1] + 1 < gridSize) {
+	    foldingIndicatorCoords.set(
+		aaRotationPoint[0] + "-" + (aaRotationPoint[1] + 1),
+		aaOrigin[0] < aaRotationPoint[0] ? 1 : -1
+	    );
+	}
+	if (aaRotationPoint[1] - 1 >= 0) {
+	    foldingIndicatorCoords.set(
+		aaRotationPoint[0] + "-" + (aaRotationPoint[1] - 1),
+		aaOrigin[0] < aaRotationPoint[0] ? -1 : 1
+	    );
+	}
+    }
+    return foldingIndicatorCoords;
+}
+
+
 function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, direction, gridSize) {
     // calculating the possible rotation of the chain depending on selected aa
     // direction is either 1 (anti-clockwise) or -1 (clockwise) (sens trigonometrique)
-
     // Find which part to move
     let allAminos = Array.from(aminoCoordMap.keys());
     let aminosToRotate;
@@ -127,7 +165,6 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
 	}
 	newVectors.push([newVectorToNext, aminoCoordMap.get(nextAmino)]);
     });
-    console.log(newVectors);
 
     let currentPoint = aaRotationPoint.split("-").map((x) => parseInt(x, 10));
     let newAminoChain = new Map();
@@ -146,7 +183,6 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
     });
 
     let fullAminoChain;
-    console.log(aminoCoordMap);
     if (rotationPossible) {
 	// convert these back to a Map
 	let leftOverAminosMap = new Map();
@@ -169,13 +205,14 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
     }
 }
 
-console.log(findPossibleRotation(testCoords, "1-1", "1-2", 1, 10));
-
 
 export {
     // const
     aminos,
     // funcs
     configFromSequence,
-    linkLocationGen
+    linkLocationGen,
+    findPossibleRotation,
+    getFoldingIndicators,
+    gridFromCoordMap
 };

@@ -15,7 +15,10 @@ body {
 
 .td.aa-cell {
     border: 1px solid black;
-    text-align: center;
+}
+
+.td.aa-cell.active {
+    background: lightgreen;
 }
 
 .td.aa-link {
@@ -33,14 +36,15 @@ body {
 div.aa {
     height: 25px;
     width: 25px;
+    border-radius: 10px;
 }
 
 div.aa.P {
-    background: green;
+    background: orange;
 }
 
 div.aa.H {
-    background: blue;
+    background: purple;
 }
 
 /* links */
@@ -69,8 +73,5 @@ div.link.active {
     position: relative;
     top: 7.5px;
     left: 7.5px;
-}
-
-.folding-indicator.active {
-    background: orange;
+    background: blue;
 }
