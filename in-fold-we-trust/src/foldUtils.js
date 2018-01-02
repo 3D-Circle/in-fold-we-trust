@@ -4,7 +4,6 @@
 
 
 const aminos = "HPHHPPPH";
-const testCoords = new Map([["1-1", "H"], ["1-2", "P"], ["2-2", "H"], ["2-3", "H"]]);
 
 
 const empty2dArray = (n) =>

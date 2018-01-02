@@ -174,10 +174,6 @@ FoldingBoard.propTypes = {
 
 
 class AminoAcidCell extends Component {
-    constructor(props) {
-	super(props);
-    }
-
     generateCellContent() {
 	let cellContent = undefined;
 	if (this.props.hp !== undefined) {
@@ -213,10 +209,6 @@ AminoAcidCell.propTypes = {
 
 
 class AminoAcid extends Component {
-    constructor(props) {
-	super(props);
-    }
-    
     render() {
         return (
 	    <div className={["aa", this.props.hp].join(" ")}
