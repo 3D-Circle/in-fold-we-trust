@@ -7,6 +7,7 @@ import {
 } from './foldUtils.js';
 import './App.css';
 import update from 'immutability-helper';
+import {findHHContact} from "./foldUtils";
 
 /* 
    -- Terminology
@@ -17,7 +18,7 @@ import update from 'immutability-helper';
 
 
 class App extends Component {
-    constructor(props) {
+    constructor() {
         super();
         document.title = "HP Folding";
     }
@@ -25,8 +26,7 @@ class App extends Component {
     render() {
         return (
             <div id="wrapper">
-              <div id="title">HP-Folding</div>
-              <FoldingBoard gridSize={this.props.gridSize} aminoString={aminos}/>
+                <FoldingBoard gridSize={10} aminoString={aminos}/>
             </div>
         );
     }
@@ -44,7 +44,7 @@ class FoldingBoard extends Component {
         this.foldingIndicatorClick = this.foldingIndicatorClick.bind(this);
         this.resetToNormalState = this.resetToNormalState.bind(this);
 
-        let r = configFromSequence(this.props.aminoString);
+        let r = configFromSequence(this.props.aminoString);  // TODO give the user the ability to change aminoString
         this.state = {
             // a Map object with the structure:
             // { aminoCoords -> HP-property } (either "H" or "P")
@@ -63,7 +63,8 @@ class FoldingBoard extends Component {
             // "chooseDirection": the user is choosing the rotation direction
             foldingStep: "normal",
             selectedAmino: "",  // coords are as string, "x-y"
-            rotationAmino: ""
+            rotationAmino: "",
+            score: findHHContact(r[0]).length
         };
     }
 
@@ -135,7 +136,8 @@ class FoldingBoard extends Component {
         let newAminos = this.state.currentPossibleRotations.get(direction);
         this.setState(update(this.state, {
             aminoCoordMap: {$set: newAminos},
-            grid: {$set: gridFromCoordMap(newAminos, this.state.grid.length)}
+            grid: {$set: gridFromCoordMap(newAminos, this.state.grid.length)},
+            score: {$set: findHHContact(newAminos).length}
         }), this.resetToNormalState);  // we reset to normal mode
     }
 
@@ -154,8 +156,9 @@ class FoldingBoard extends Component {
         // creates the folding board grid
         let result = [];
         let joins = linkLocationGen(this.state.aminoCoordMap);
+        const HHs = findHHContact(this.state.aminoCoordMap);
         let tdFactory = (y, gridSize) => {
-            return [...Array(gridSize * 2 - 1)].map((_, x) => {
+            return [...new Array(gridSize * 2 - 1)].map((_, x) => {
                 let tds = [];
                 if ((y % 2 === 0) && (x % 2 === 0)) {
                     // checking if there is an AA at this location of the grid
@@ -171,7 +174,8 @@ class FoldingBoard extends Component {
                         <AminoAcidCell key={"" + x + y} hp={gridElementAtPos}
                                        foldingIndicatorDirection={foldingIndicatorDirection}
                                        coords={x / 2 + "-" + y / 2}
-                                       aminoClickCallback={this.aminoClick} isActive={isActive}
+                                       aminoClickCallback={this.aminoClick}
+                                       isActive={isActive}
                                        indicatorClickCallback={this.foldingIndicatorClick}/>
                     );
                 } else if ((x % 2) !== (y % 2)) {  // its a link cell
@@ -179,26 +183,27 @@ class FoldingBoard extends Component {
                     let singleLink;
 
                     if (orientationClass === "wide") {
-                        singleLink = [[(x - 1) / 2, y / 2].join("-"), [(x + 1) / 2, y / 2].join("-")];
+                        singleLink = [`${(x - 1) / 2}-${y / 2}`, `${(x + 1) / 2}-${y / 2}`]
                     } else {
-                        singleLink = [[x / 2, (y - 1) / 2].join("-"), [x / 2, (y + 1) / 2].join("-")];
+                        singleLink = [`${x / 2}-${(y - 1) / 2}`, `${x / 2}-${(y + 1) / 2}`]
                     }
                     // check if the link should be coloured
                     let linkIsActive = joins.includes(singleLink.join("--"))
-                        || joins.includes([...singleLink].reverse().join("--"));
+                        || joins.includes(singleLink.reverse().join("--"));
+                    console.log(x, y);
+                    const isHHContact = HHs.includes(`${x}-${y}`);
 
                     tds.push( // TODO: shrink the links
-                        <div key={"" + x + y}
-                             className={["td", "aa-link", orientationClass].join(" ")}
+                        <div key={"" + x + "-" + y}  // PFF MAKE AN EFFORT TO MAKE KEYS UNIQUE OK?
+                             className={`td aa-link ${orientationClass}`}
                              onClick={this.resetToNormalState}>
-                            <div className={["link", linkIsActive ? "active" : ""].join(" ")}/>
+                            <div className={`link ${linkIsActive ? "active" : ""}`}>{isHHContact ? 'HH' : ''}</div>
                         </div>
                     );
                 } else {
-                    tds.push(<div key={"" + x + y}
+                    tds.push(<div key={"" + x + "-" + y}
                                   className="td empty"
-                                  // this doesn't really work, you really have to click on the border
-                                  // onClick={this.resetToNormalState}
+                                  onClick={this.resetToNormalState}
                     />);
                 }
                 return tds;
@@ -216,11 +221,10 @@ class FoldingBoard extends Component {
     }
 
     render() {
-        return (
-            <div id="board-wrapper">
-              {this.createGrid(10)}
-            </div>
-        );
+        return <div id="board-wrapper">
+            {this.createGrid(10)}
+            <div>{this.state.score}</div>
+        </div>;
     }
 }
 

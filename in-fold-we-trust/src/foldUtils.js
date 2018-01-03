@@ -7,7 +7,7 @@ const aminos = "HPHHPPPH";
 
 
 const empty2dArray = (n) =>
-    Array(n).fill(undefined).map(() => Array(n).fill(undefined)); // to avoid the [None] * x syndrome
+    new Array(n).fill(undefined).map(() => new Array(n).fill(undefined)); // to avoid the [None] * x syndrome
 
 const cutArray = (arr, n, d) => // if d is 1 we include the nth element in the first list, else in second list
     [arr.slice(0, n + d), arr.slice(n + d)];  // returns two arrays
@@ -79,7 +79,7 @@ function linkLocationGen(aminoCoordMap) {
     let allCoords = Array.from(aminoCoordMap.keys());
     allCoords.forEach((key, index) => {
         if (index !== allCoords.length - 1) {
-            result.push([key, allCoords[index + 1]].join("--"));  // TODO when changing strings change this
+            result.push(`${key}--${allCoords[index + 1]}`);  // TODO when changing strings change this
         }
     });
     return result;
@@ -243,14 +243,49 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
 }
 
 
+function findHHContact(aminoCoordMap) {
+    const contacts = [];
+    const coords = Array.from(aminoCoordMap.keys());
+    coords.forEach((key, index) => {
+        const currentAA = aminoCoordMap.get(key);
+        if (currentAA === 'H') {
+            const [x, y] = key.split('-').map((value) => parseInt(value, 10));
+            const connectedCoordinates = [
+                coords[index - 1],
+                coords[index + 1]
+            ];
+            for (const [x2, y2] of [
+                [x - 1, y],  // left
+                [x + 1, y],  // right
+                [x, y - 1],  // bottom
+                [x, y + 1],  // up
+            ]) {
+                const adjacentCoord = `${x2}-${y2}`;
+                if (aminoCoordMap.get(adjacentCoord) === 'H'
+                    && !connectedCoordinates.includes(adjacentCoord)) {
+                    let linkCoordX = x + x2,
+                        linkCoordY = y + y2;
+                    const linkCoord = `${linkCoordX}-${linkCoordY}`;
+                    if (!contacts.includes(linkCoord)) {
+                        contacts.push(linkCoord)
+                    }
+                }
+            }
+        }
+    });
+    return contacts
+}
+
+
 export {
     // const
     aminos,
     // funcs
     configFromSequence,
-    linkLocationGen,
+    findHHContact,
+    findMapNeighbours,
     findPossibleRotation,
     getFoldingIndicators,
     gridFromCoordMap,
-    findMapNeighbours
+    linkLocationGen,
 };
