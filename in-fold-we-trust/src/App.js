@@ -26,7 +26,8 @@ class App extends Component {
     render() {
         return (
             <div id="wrapper">
-                <FoldingBoard gridSize={10} aminoString={aminos}/>
+              <div id="title">HP Folding</div>
+              <FoldingBoard gridSize={10} aminoString={aminos}/>
             </div>
         );
     }
@@ -91,7 +92,7 @@ class FoldingBoard extends Component {
                 this.setState(update(this.state, {
                     selectedAmino: {$set: coords},
                     foldingStep: {$set: "chooseRotation"}
-                }))
+                }));
             } else {
                 this.setState(update(this.state, {
                     rotationAmino: {$set: coords},
@@ -183,14 +184,14 @@ class FoldingBoard extends Component {
                     let singleLink;
 
                     if (orientationClass === "wide") {
-                        singleLink = [`${(x - 1) / 2}-${y / 2}`, `${(x + 1) / 2}-${y / 2}`]
+                        singleLink = [`${(x - 1) / 2}-${y / 2}`, `${(x + 1) / 2}-${y / 2}`];
                     } else {
-                        singleLink = [`${x / 2}-${(y - 1) / 2}`, `${x / 2}-${(y + 1) / 2}`]
+                        singleLink = [`${x / 2}-${(y - 1) / 2}`, `${x / 2}-${(y + 1) / 2}`];
                     }
                     // check if the link should be coloured
                     let linkIsActive = joins.includes(singleLink.join("--"))
                         || joins.includes(singleLink.reverse().join("--"));
-                    console.log(x, y);
+                    
                     const isHHContact = HHs.includes(`${x}-${y}`);
 
                     tds.push( // TODO: shrink the links
