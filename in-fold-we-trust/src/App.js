@@ -20,7 +20,7 @@ class App extends Component {
     render() {
         return (
             <div id="wrapper">
-                <FoldingBoard gridSize={this.props.gridSize} aminoString={aminos}/>
+                <FoldingBoard gridSize={10} aminoString={aminos}/>
             </div>
         );
     }
@@ -38,7 +38,7 @@ class FoldingBoard extends Component {
         this.foldingIndicatorClick = this.foldingIndicatorClick.bind(this);
         this.resetToNormalState = this.resetToNormalState.bind(this);
 
-        let r = configFromSequence(this.props.aminoString);
+        let r = configFromSequence(this.props.aminoString);  // TODO give the user the ability to change aminoString
         this.state = {
             // a Map object with the structure:
             // { aminoCoords -> HP-property } (either "H" or "P")
@@ -57,7 +57,7 @@ class FoldingBoard extends Component {
             // "chooseDirection": the user is choosing the rotation direction
             foldingStep: "normal",
             selectedAmino: "",  // coords are as string, "x-y"
-            rotationAmino: ""
+            rotationAmino: "",
         };
     }
 
@@ -129,7 +129,7 @@ class FoldingBoard extends Component {
         let newAminos = this.state.currentPossibleRotations.get(direction);
         this.setState(update(this.state, {
             aminoCoordMap: {$set: newAminos},
-            grid: {$set: gridFromCoordMap(newAminos, this.state.grid.length)}
+            grid: {$set: gridFromCoordMap(newAminos, this.state.grid.length)},
         }), this.resetToNormalState);  // we reset to normal mode
     }
 
@@ -165,7 +165,8 @@ class FoldingBoard extends Component {
                         <AminoAcidCell key={"" + x + y} hp={gridElementAtPos}
                                        foldingIndicatorDirection={foldingIndicatorDirection}
                                        coords={x / 2 + "-" + y / 2}
-                                       aminoClickCallback={this.aminoClick} isActive={isActive}
+                                       aminoClickCallback={this.aminoClick}
+                                       isActive={isActive}
                                        indicatorClickCallback={this.foldingIndicatorClick}/>
                     );
                 } else if ((x % 2) !== (y % 2)) {  // its a link cell
@@ -173,13 +174,13 @@ class FoldingBoard extends Component {
                     let singleLink;
 
                     if (orientationClass === "wide") {
-                        singleLink = [[(x - 1) / 2, y / 2].join("-"), [(x + 1) / 2, y / 2].join("-")];
+                        singleLink = [`${(x - 1) / 2}-${y / 2}`, `${(x + 1) / 2}-${y / 2}`]
                     } else {
-                        singleLink = [[x / 2, (y - 1) / 2].join("-"), [x / 2, (y + 1) / 2].join("-")];
+                        singleLink = [`${x / 2}-${(y - 1) / 2}`, `${x / 2}-${(y + 1) / 2}`]
                     }
                     // check if the link should be coloured
                     let linkIsActive = joins.includes(singleLink.join("--"))
-                        || joins.includes([...singleLink].reverse().join("--"));
+                        || joins.includes(singleLink.reverse().join("--"));
 
                     tds.push( // TODO: shrink the links
                         <div key={"" + x + y}
@@ -191,8 +192,7 @@ class FoldingBoard extends Component {
                 } else {
                     tds.push(<div key={"" + x + y}
                                   className="td empty"
-                                  // this doesn't really work, you really have to click on the border
-                                  // onClick={this.resetToNormalState}
+                                  onClick={this.resetToNormalState}
                     />);
                 }
                 return tds;
@@ -210,7 +210,9 @@ class FoldingBoard extends Component {
     }
 
     render() {
-        return this.createGrid(10);
+        return <div>
+            {this.createGrid(10)}
+        </div>;
     }
 }
 
