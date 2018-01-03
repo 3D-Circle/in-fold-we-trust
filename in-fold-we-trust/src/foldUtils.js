@@ -7,7 +7,7 @@ const aminos = "HPHHPPPH";
 
 
 const empty2dArray = (n) =>
-    Array(n).fill(undefined).map(() => Array(n).fill(undefined)); // to avoid the [None] * x syndrome
+    new Array(n).fill(undefined).map(() => new Array(n).fill(undefined)); // to avoid the [None] * x syndrome
 
 const cutArray = (arr, n, d) => // if d is 1 we include the nth element in the first list, else in second list
     [arr.slice(0, n + d), arr.slice(n + d)];  // returns two arrays

@@ -18,6 +18,11 @@ import {findHHContact} from "./foldUtils";
 
 
 class App extends Component {
+    constructor() {
+        super();
+        document.title = "HP Folding";
+    }
+    
     render() {
         return (
             <div id="wrapper">
@@ -153,7 +158,7 @@ class FoldingBoard extends Component {
         let joins = linkLocationGen(this.state.aminoCoordMap);
         const HHs = findHHContact(this.state.aminoCoordMap);
         let tdFactory = (y, gridSize) => {
-            return [...Array(gridSize * 2 - 1)].map((_, x) => {
+            return [...new Array(gridSize * 2 - 1)].map((_, x) => {
                 let tds = [];
                 if ((y % 2 === 0) && (x % 2 === 0)) {
                     // checking if there is an AA at this location of the grid
@@ -207,7 +212,7 @@ class FoldingBoard extends Component {
 
         for (let y = 0; y < gridSize * 2 - 1; y++) {
             result.push(
-                <div key={"row" + y} className="tr">
+                <div key={"row" + y} className={["tr", y % 2 !== 0 ? "short" : ""].join(" ")}>
                     {tdFactory(y, gridSize)}
                 </div>
             );
@@ -216,7 +221,7 @@ class FoldingBoard extends Component {
     }
 
     render() {
-        return <div>
+        return <div id="board-wrapper">
             {this.createGrid(10)}
             <div>{this.state.score}</div>
         </div>;
