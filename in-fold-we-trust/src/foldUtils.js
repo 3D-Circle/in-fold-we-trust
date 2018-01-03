@@ -9,16 +9,26 @@ const aminos = "HPHHPPPH";
 const empty2dArray = (n) =>
       Array(n).fill().map(()=>Array(n).fill()); // to avoid the [None] * x syndrome
 
-const cutArray = (arr, n, d) => // if d is 1 we include the nth element in the first list
-      [arr.slice(0, n + d), arr.slice(n + d)];
+const cutArray = (arr, n, d) => // if d is 1 we include the nth element in the first list, else in second list
+      [arr.slice(0, n + d), arr.slice(n + d)];  // returns two arrays
+
+const compareArrays = (a1, a2) =>
+      (a1.length === a2.length) && a1.every((v, i) => v === a2[i]);
+
+const findMapNeighbours = (m, keyToFind) => {  // this doesn't work for nested lists /!\
+    let mapArray = Array.from(m.keys());
+    let found = mapArray.indexOf(keyToFind);
+    return [ 
+	found > 0 ? mapArray[found - 1] : undefined,
+	found < m.size - 1 ? mapArray[found + 1] : undefined
+    ]
+}
 
 /* vector stuff */
 const vectorFromPoints = (from, to) =>
       [to[0] - from[0], to[1] - from[1]];
 
-const compareArrays = (a1, a2) =>
-      (a1.length === a2.length) && a1.every((v, i) => v === a2[i]);
-
+// this is for determining the new vector from a vector and a rotation
 const vectorWheel = [[1, 0], [0, -1], [-1, 0], [0, 1]];
 const vectorWheelPos = (v) =>
       vectorWheel.findIndex((x) => compareArrays(x, v));
@@ -29,6 +39,7 @@ const applyVectorToPoint = (p, v) =>
 
 
 function configFromSequence(seq, random=false) {
+    // creates a flat or random grid and coordMap from a string seqence
     let grid = empty2dArray(seq.length + 2);
     let aminoCoordMap = new Map();
     let middle = Math.floor(seq.length / 2);
@@ -51,10 +62,10 @@ function configFromSequence(seq, random=false) {
 
 
 function gridFromCoordMap(aminoCoordMap, gridSize) {
-    // this will blindly follow the coordinates specified in the obj
+    // create a grid from a coordMap
     let grid = empty2dArray(gridSize);
     for (let aa of aminoCoordMap.keys()) {
-	let coords = aa.split("-"); // TODO replace by lists instead of string
+	let coords = aa.split("-");
 	grid[coords[0]][coords[1]] = aminoCoordMap.get(aa);
     }
     return grid;
@@ -62,6 +73,8 @@ function gridFromCoordMap(aminoCoordMap, gridSize) {
 
 
 function linkLocationGen(aminoCoordMap) {
+    // creates a list of links from an aminoCoordMap
+    // this is possible because Maps are ordered
     // returns: list of coords of each link
     let result = [];
     let allCoords = Array.from(aminoCoordMap.keys());
@@ -76,6 +89,8 @@ function linkLocationGen(aminoCoordMap) {
 
 function getFoldingIndicators(_aaOrigin, _aaRotationPoint, gridSize, directionValidity) {
     // TODO optimize in terms in space
+    // this returns the folding indicator Map
+    // structure: { coords -> -1 || +1 }
     // direction validity is a map with +1 || -1 --> something not undefined || undefined
     let aaOrigin = _aaOrigin.split("-").map((x) => parseInt(x, 10));
     let aaRotationPoint = _aaRotationPoint.split("-").map((x) => parseInt(x, 10));
@@ -143,13 +158,18 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
     // calculation + tranformation of all the vectors
     let newVectors = [];
     aminosToRotate.forEach((nextAmino, index) => {
-	// ok so this is bordel.
+	// ok so this is naming un peu bordel
 	// new-/old- prefix to show transformation/or not
 	// new is the amino that is iterated through map
 	// current- is the previous amino (not the one currently being iterated)
-	// doesn't make sense but its better like this, because first current
+	// doesn't make sense but its better like this, because first currentAmino
 	// is not in aminosToRotate (its the aaRotationPoint)
 
+	// so we have two coords, currentAmino and nextAmino
+	// we find the vector from current to next
+	// we tranform this vector according to the folding / rotation we have
+	// we add the new vector to the list
+	
 	// current coords
 	let oldCurrentAminoCoords;
 	if (index === 0) {
@@ -163,7 +183,7 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
 
 	// old vector
 	let oldVectorToNext = vectorFromPoints(oldCurrentAminoCoords, oldNextAminoCoords);
-	// calculate new vector from rotate (TODO support more than pi/2 for rotation (not really necessary))
+	// calculate new vector from rotate
 	let p = vectorWheelPos(oldVectorToNext);
 	let newVectorToNext;
 	if (p === 0 && direction === -1) {
@@ -176,6 +196,8 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
 	newVectors.push([newVectorToNext, aminoCoordMap.get(nextAmino)]);
     });
 
+    // we then apply each of the *new* vectors in the list to the starting point
+    // which will give us the structure of the amino chain *after* folding
     let currentPoint = aaRotationPoint.split("-").map((x) => parseInt(x, 10));
     let newAminoChain = new Map();
     let newPoint;
@@ -192,14 +214,15 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
 	    console.log("this thing is out of bounds !");
 	}
 	if ((aminoCoordMap.get(newPoint.join("-")) !== undefined) || outOfBounds)  {
+	    // one conflict = rotation impossible
 	    rotationPossible = false;
-	    // TODO could we immediately break here ?
+	    return;
 	}
     });
 
     let fullAminoChain;
     if (rotationPossible) {
-	// convert these back to a Map
+	// convert this coordList back to a aminoCoordMap
 	let leftOverAminosMap = new Map();
 	leftOverAminos.forEach((c) => {
 	    leftOverAminosMap.set(c, aminoCoordMap.get(c)); 
@@ -213,12 +236,11 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
 	} else {
 	    throw new Error("THIS SHOULD NEVER HAPPEN");
 	}
-	console.log("AMINO CHAIN AFTER FOLD");
 	console.log(fullAminoChain);
 	return fullAminoChain;
     } else {
 	console.log("Rotation impossible !");
-	return undefined;
+	return undefined; 
     }
 }
 
@@ -231,5 +253,6 @@ export {
     linkLocationGen,
     findPossibleRotation,
     getFoldingIndicators,
-    gridFromCoordMap
+    gridFromCoordMap,
+    findMapNeighbours
 };
