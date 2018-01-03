@@ -7,6 +7,7 @@ import {
 } from './foldUtils.js';
 import './App.css';
 import update from 'immutability-helper';
+import {findHHContact} from "./foldUtils";
 
 /* 
    -- Terminology
@@ -58,6 +59,7 @@ class FoldingBoard extends Component {
             foldingStep: "normal",
             selectedAmino: "",  // coords are as string, "x-y"
             rotationAmino: "",
+            score: findHHContact(r[0]).length
         };
     }
 
@@ -130,6 +132,7 @@ class FoldingBoard extends Component {
         this.setState(update(this.state, {
             aminoCoordMap: {$set: newAminos},
             grid: {$set: gridFromCoordMap(newAminos, this.state.grid.length)},
+            score: {$set: findHHContact(newAminos).length}
         }), this.resetToNormalState);  // we reset to normal mode
     }
 
@@ -148,6 +151,7 @@ class FoldingBoard extends Component {
         // creates the folding board grid
         let result = [];
         let joins = linkLocationGen(this.state.aminoCoordMap);
+        const HHs = findHHContact(this.state.aminoCoordMap);
         let tdFactory = (y, gridSize) => {
             return [...Array(gridSize * 2 - 1)].map((_, x) => {
                 let tds = [];
@@ -181,16 +185,18 @@ class FoldingBoard extends Component {
                     // check if the link should be coloured
                     let linkIsActive = joins.includes(singleLink.join("--"))
                         || joins.includes(singleLink.reverse().join("--"));
+                    console.log(x, y);
+                    const isHHContact = HHs.includes(`${x}-${y}`);
 
                     tds.push( // TODO: shrink the links
-                        <div key={"" + x + y}
-                             className={["td", "aa-link", orientationClass].join(" ")}
+                        <div key={"" + x + "-" + y}  // PFF MAKE AN EFFORT TO MAKE KEYS UNIQUE OK?
+                             className={`td aa-link ${orientationClass}`}
                              onClick={this.resetToNormalState}>
-                            <div className={["link", linkIsActive ? "active" : ""].join(" ")}/>
+                            <div className={`link ${linkIsActive ? "active" : ""}`}>{isHHContact ? 'HH' : ''}</div>
                         </div>
                     );
                 } else {
-                    tds.push(<div key={"" + x + y}
+                    tds.push(<div key={"" + x + "-" + y}
                                   className="td empty"
                                   onClick={this.resetToNormalState}
                     />);
@@ -212,6 +218,7 @@ class FoldingBoard extends Component {
     render() {
         return <div>
             {this.createGrid(10)}
+            <div>{this.state.score}</div>
         </div>;
     }
 }

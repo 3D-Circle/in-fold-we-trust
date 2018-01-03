@@ -79,7 +79,7 @@ function linkLocationGen(aminoCoordMap) {
     let allCoords = Array.from(aminoCoordMap.keys());
     allCoords.forEach((key, index) => {
         if (index !== allCoords.length - 1) {
-            result.push([key, allCoords[index + 1]].join("--"));  // TODO when changing strings change this
+            result.push(`${key}--${allCoords[index + 1]}`);  // TODO when changing strings change this
         }
     });
     return result;
@@ -243,14 +243,49 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
 }
 
 
+function findHHContact(aminoCoordMap) {
+    const contacts = [];
+    const coords = Array.from(aminoCoordMap.keys());
+    coords.forEach((key, index) => {
+        const currentAA = aminoCoordMap.get(key);
+        if (currentAA === 'H') {
+            const [x, y] = key.split('-').map((value) => parseInt(value, 10));
+            const connectedCoordinates = [
+                coords[index - 1],
+                coords[index + 1]
+            ];
+            for (const [x2, y2] of [
+                [x - 1, y],  // left
+                [x + 1, y],  // right
+                [x, y - 1],  // bottom
+                [x, y + 1],  // up
+            ]) {
+                const adjacentCoord = `${x2}-${y2}`;
+                if (aminoCoordMap.get(adjacentCoord) === 'H'
+                    && !connectedCoordinates.includes(adjacentCoord)) {
+                    let linkCoordX = x + x2,
+                        linkCoordY = y + y2;
+                    const linkCoord = `${linkCoordX}-${linkCoordY}`;
+                    if (!contacts.includes(linkCoord)) {
+                        contacts.push(linkCoord)
+                    }
+                }
+            }
+        }
+    });
+    return contacts
+}
+
+
 export {
     // const
     aminos,
     // funcs
     configFromSequence,
-    linkLocationGen,
+    findHHContact,
+    findMapNeighbours,
     findPossibleRotation,
     getFoldingIndicators,
     gridFromCoordMap,
-    findMapNeighbours
+    linkLocationGen,
 };
