@@ -87,7 +87,10 @@ class FoldingBoard extends Component {
             if (coords === this.state.selectedAmino) {
                 alert("You must select a different amino\nTODO make that a better dialog");
             } else if (neighbourAminos.includes(coords) === false) {
-                alert("You must select a rotation point adjacent to this amino in the chain");
+                this.setState(update(this.state, {
+                    selectedAmino: {$set: coords},
+                    foldingStep: {$set: "chooseRotation"}
+                }))
             } else {
                 this.setState(update(this.state, {
                     rotationAmino: {$set: coords},
@@ -185,12 +188,18 @@ class FoldingBoard extends Component {
                         || joins.includes([...singleLink].reverse().join("--"));
 
                     tds.push( // TODO: shrink the links
-                        <div key={"" + x + y} className={["td", "aa-link", orientationClass].join(" ")}>
+                        <div key={"" + x + y}
+                             className={["td", "aa-link", orientationClass].join(" ")}
+                             onClick={this.resetToNormalState}>
                             <div className={["link", linkIsActive ? "active" : ""].join(" ")}/>
                         </div>
                     );
                 } else {
-                    tds.push(<div key={"" + x + y} className="td empty"/>);
+                    tds.push(<div key={"" + x + y}
+                                  className="td empty"
+                                  // this doesn't really work, you really have to click on the border
+                                  // onClick={this.resetToNormalState}
+                    />);
                 }
                 return tds;
             });
