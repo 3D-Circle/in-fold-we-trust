@@ -2,19 +2,49 @@ body {
     background: whitesmoke;
 }
 
-/* table */
+div#wrapper {
+    text-align: center;
+}
+
+div#title {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: sans-serif;
+}
+
+
+
+/* --- Folding Board --- */
+
+div#board-wrapper {
+    display: inline-block;
+    --normal-cell-len: 35px;
+    --small-cell-len: 15px;
+}
+
+/* ----------
+   table 
+*/
 .tr {
-    height: 25px;
+    height: var(--normal-cell-len);
+}
+
+.tr.short {
+    height: var(--small-cell-len);
 }
 
 .td {
     display: inline-block;
-    height: 25px;
-    width: 25px;
+    height: var(--normal-cell-len);
+    width: var(--normal-cell-len);
 }
 
 .td.aa-cell {
-    border: 1px solid black;
+    border: 1px solid #afafaf;
+    background: lightgrey;
+    width: calc(var(--normal-cell-len) - 2px);
+    height: calc(var(--normal-cell-len) - 2px);
 }
 
 .td.aa-cell.active {
@@ -28,50 +58,67 @@ body {
     position: relative;
 }
 
-.td.empty {
-    width: 27px;  /* to compensate for border */
+.td.aa-link.wide {
+    width: var(--small-cell-len);
 }
 
-/* amino acid */
+.td.aa-link.tall {
+    height: 17px;
+}
+
+.td.empty {
+    width: var(--small-cell-len);  /* to compensate for border */
+    height: 17px;
+}
+
+/* ----------
+   amino acid 
+*/
 div.aa {
-    height: 25px;
-    width: 25px;
-    border-radius: 10px;
+    height: calc(var(--normal-cell-len) - 2px);
+    width: calc(var(--normal-cell-len) - 2px);
+    border-radius: 20px;
 }
 
 div.aa.P {
-    background: orange;
+    background: royalblue;
 }
 
 div.aa.H {
-    background: purple;
+    background: darkolivegreen;
 }
 
-/* links */
+/* ----------
+   links 
+*/
 div.link.active {
-    background: red;
+    background: tomato;
 }
 
 .td.tall > .link {
     width: 5px;
-    height: 25px;
-    margin: 0 auto;
+    height: var(--small-cell-len);
+    position: absolute;
+    top: 0;
+    left: 43%;
 }
 
 .td.wide > .link {
-    width: 25px;
+    width: var(--small-cell-len);
     height: 5px;
     position: absolute;
-    top: 47.5%; left: 49%;  /* compensate for the thickness of the link TODO: fix the tiny displacements*/
+    top: calc(50% - 1px); left: 50%;
     transform: translate(-50%,-50%);
 }
  
-/* folding indicators */
+/* ----------
+   folding indicators 
+*/
 .folding-indicator {
-    height: 9px;
-    width: 9px;
-    position: relative;
-    top: 7.5px;
-    left: 7.5px;
-    background: blue;
+    height: calc(var(--normal-cell-len) - 2px);
+    width: calc(var(--normal-cell-len) - 2px);
+    /* position: relative; */
+    /* top: 4.5px; */
+    /* left: 4.5px; */
+    background: lightblue;
 }

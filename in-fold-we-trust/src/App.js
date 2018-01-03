@@ -17,6 +17,11 @@ import update from 'immutability-helper';
 
 
 class App extends Component {
+    constructor(props) {
+        super();
+        document.title = "HP Folding";
+    }
+    
     render() {
         return (
             <div id="wrapper">
