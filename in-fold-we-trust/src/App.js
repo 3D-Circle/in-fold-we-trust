@@ -20,7 +20,8 @@ class App extends Component {
     render() {
         return (
             <div id="wrapper">
-                <FoldingBoard gridSize={this.props.gridSize} aminoString={aminos}/>
+              <div id="title">HP-Folding</div>
+              <FoldingBoard gridSize={this.props.gridSize} aminoString={aminos}/>
             </div>
         );
     }
@@ -192,7 +193,7 @@ class FoldingBoard extends Component {
 
         for (let y = 0; y < gridSize * 2 - 1; y++) {
             result.push(
-                <div key={"row" + y} className="tr">
+                <div key={"row" + y} className={["tr", y % 2 !== 0 ? "short" : ""].join(" ")}>
                     {tdFactory(y, gridSize)}
                 </div>
             );
@@ -201,7 +202,11 @@ class FoldingBoard extends Component {
     }
 
     render() {
-        return this.createGrid(10);
+        return (
+            <div id="board-wrapper">
+              {this.createGrid(10)}
+            </div>
+        );
     }
 }
 
