@@ -223,9 +223,16 @@ class FoldingBoard extends Component {
     }
 
     render() {
-        return <div id="board-wrapper">
+        let normalCellLen = 35;
+        let smallCellLen = 15;
+        let dynamicStyle = {
+            minWidth: this.state.grid.length * (normalCellLen + smallCellLen) - smallCellLen,
+            "--normal-cell-len": normalCellLen + "px",
+            "--small-cell-len": smallCellLen + "px"
+        };
+        return <div id="board-wrapper" style={dynamicStyle}>
             {this.createGrid(this.state.gridSize)}
-            <div id="scorebox">Current energy level: {this.state.score > 0 ? -this.state.score : this.state.score}</div>
+            <div id="scorebox">Current energy/stability: {this.state.score > 0 ? -this.state.score : this.state.score}</div>
         </div>;
     }
 }

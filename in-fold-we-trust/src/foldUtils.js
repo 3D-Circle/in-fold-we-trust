@@ -3,7 +3,7 @@
 */
 
 
-const aminos = "HPPHPH";
+const aminos = "HPHHPPHP";
 
 
 const empty2dArray = (n) =>
@@ -21,7 +21,7 @@ const findMapNeighbours = (m, keyToFind) => {  // this doesn't work for nested l
     return [
         found > 0 ? mapArray[found - 1] : undefined,
         found < m.size - 1 ? mapArray[found + 1] : undefined
-    ]
+    ];
 };
 
 /* vector stuff */
