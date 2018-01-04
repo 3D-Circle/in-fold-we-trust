@@ -277,7 +277,7 @@ class AminoAcidCell extends Component {
     render() {
         return (
             <div className={["td", "aa-cell", this.props.isActive ? "active" : ""].join(" ")}
-                 onClick={this.props.hp ? () => null : this.props.aminoClickCallback}>
+                 onClick={this.props.hp || this.props.foldingIndicatorDirection ? () => null : this.props.aminoClickCallback}>
                 {this.generateCellContent.bind(this)()}
             </div>
         );
