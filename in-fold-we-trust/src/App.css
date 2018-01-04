@@ -38,6 +38,7 @@ div#board-wrapper {
     display: inline-block;
     height: var(--normal-cell-len);
     width: var(--normal-cell-len);
+    z-index: 1;
 }
 
 .td.aa-cell {
@@ -78,6 +79,7 @@ div.aa {
     height: calc(var(--normal-cell-len) - 2px);
     width: calc(var(--normal-cell-len) - 2px);
     border-radius: 20px;
+    z-index: 5;
 }
 
 div.aa.P {
@@ -111,9 +113,25 @@ div.link.active {
     transform: translate(-50%,-50%);
 }
 
-// HH bond
-.td > .link.hh-bond {
-    background: red;
+.td.tall > .link.hh-bond {
+    width: 5px;
+    background: repeating-linear-gradient(
+      transparent,
+      transparent 1px,
+      black 1px,
+      black 2px
+    );
+}
+
+.td.wide > .link.hh-bond {
+    height: 5px;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 1px,
+      black 1px,
+      black 2px
+    );
 }
  
 /* ----------
