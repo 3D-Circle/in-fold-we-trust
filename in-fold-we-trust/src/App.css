@@ -110,6 +110,11 @@ div.link.active {
     top: calc(50% - 1px); left: 50%;
     transform: translate(-50%,-50%);
 }
+
+// HH bond
+.td > .link.hh-bond {
+    background: red;
+}
  
 /* ----------
    folding indicators 
@@ -121,4 +126,14 @@ div.link.active {
     /* top: 4.5px; */
     /* left: 4.5px; */
     background: lightblue;
+}
+
+
+/* ----------
+   score box
+*/
+#scorebox {
+    border: 1px solid grey;
+    padding: 10px;
+    margin-top: 10px;
 }

@@ -3,7 +3,7 @@
 */
 
 
-const aminos = "HPHHPPPH";
+const aminos = "HPPHPH";
 
 
 const empty2dArray = (n) =>
@@ -37,7 +37,7 @@ const applyVectorToPoint = (p, v) =>
     [p[0] + v[0], p[1] + v[1]];
 
 
-function configFromSequence(seq, random = false) {
+function configFromSequence(seq, random = false, padding = 1) {
     // creates a flat or random grid and coordMap from a string seqence
     let grid = empty2dArray(seq.length + 2);
     let aminoCoordMap = new Map();
@@ -52,9 +52,9 @@ function configFromSequence(seq, random = false) {
         // }
     } else {
         seq.split("").forEach((element, x) => {
-            grid[x + 1][middle] = element;
-            aminoCoordMap.set([(x + 1), middle].join("-"), element);
-        }); // its raising warning about not returning anything, should we care ?
+            grid[x + padding][middle] = element;
+            aminoCoordMap.set([(x + padding), middle].join("-"), element);
+        });
     }
     return [aminoCoordMap, grid];
 }

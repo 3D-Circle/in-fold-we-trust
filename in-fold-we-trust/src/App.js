@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import {
     configFromSequence, linkLocationGen,
     aminos, findPossibleRotation, findMapNeighbours,
-    getFoldingIndicators, gridFromCoordMap
+    getFoldingIndicators, gridFromCoordMap, findHHContact
 } from './foldUtils.js';
 import './App.css';
 import update from 'immutability-helper';
-import {findHHContact} from "./foldUtils";
+
 
 /* 
    -- Terminology
@@ -27,7 +27,7 @@ class App extends Component {
         return (
             <div id="wrapper">
               <div id="title">HP Folding</div>
-              <FoldingBoard gridSize={10} aminoString={aminos}/>
+              <FoldingBoard aminoString={aminos}/>
             </div>
         );
     }
@@ -47,6 +47,7 @@ class FoldingBoard extends Component {
 
         let r = configFromSequence(this.props.aminoString);  // TODO give the user the ability to change aminoString
         this.state = {
+            gridSize: r[1].length,
             // a Map object with the structure:
             // { aminoCoords -> HP-property } (either "H" or "P")
             aminoCoordMap: r[0],
@@ -195,10 +196,10 @@ class FoldingBoard extends Component {
                     const isHHContact = HHs.includes(`${x}-${y}`);
 
                     tds.push( // TODO: shrink the links
-                        <div key={"" + x + "-" + y}  // PFF MAKE AN EFFORT TO MAKE KEYS UNIQUE OK?
-                             className={`td aa-link ${orientationClass}`}
+                        <div key={"" + x + "-" + y}  // PFF MAKE AN EFFORT TO MAKE KEYS UNIQUE OK? OUAIS
+                             className={`td aa-link ${orientationClass} ${isHHContact ? "hh-bond" : "" }`}
                              onClick={this.resetToNormalState}>
-                            <div className={`link ${linkIsActive ? "active" : ""}`}>{isHHContact ? 'HH' : ''}</div>
+                            <div className={`link ${linkIsActive ? "active" : ""}`}/>
                         </div>
                     );
                 } else {
@@ -223,8 +224,8 @@ class FoldingBoard extends Component {
 
     render() {
         return <div id="board-wrapper">
-            {this.createGrid(10)}
-            <div>{this.state.score}</div>
+            {this.createGrid(this.state.gridSize)}
+            <div id="scorebox">Current energy level: {this.state.score > 0 ? -this.state.score : this.state.score}</div>
         </div>;
     }
 }
