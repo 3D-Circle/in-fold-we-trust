@@ -176,7 +176,7 @@ class FoldingBoard extends Component {
                         <AminoAcidCell key={"" + x + y} hp={gridElementAtPos}
                                        foldingIndicatorDirection={foldingIndicatorDirection}
                                        coords={x / 2 + "-" + y / 2}
-                                       aminoClickCallback={this.aminoClick}
+                                       aminoClickCallback={gridElementAtPos ? this.aminoClick : this.resetToNormalState}
                                        isActive={isActive}
                                        indicatorClickCallback={this.foldingIndicatorClick}/>
                     );
@@ -263,7 +263,8 @@ class AminoAcidCell extends Component {
 
     render() {
         return (
-            <div className={["td", "aa-cell", this.props.isActive ? "active" : ""].join(" ")}>
+            <div className={["td", "aa-cell", this.props.isActive ? "active" : ""].join(" ")}
+                 onClick={this.props.hp ? () => null : this.props.aminoClickCallback}>
                 {this.generateCellContent.bind(this)()}
             </div>
         );
