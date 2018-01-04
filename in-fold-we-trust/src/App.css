@@ -1,5 +1,6 @@
 body {
     background: whitesmoke;
+    font-family: "Open Sans", sans-serif;
 }
 
 div#wrapper {
@@ -10,10 +11,19 @@ div#title {
     font-size: 24px;
     text-align: center;
     margin-bottom: 20px;
-    font-family: sans-serif;
 }
 
+div#menu {
+    padding: 10px;
+    margin-bottom: 10px;
+}
 
+.menu-item {
+    padding: 5px 10px;
+    display: inline;
+    margin-left: 10px;
+    background: lightblue;
+}
 
 /* --- Folding Board --- */
 
@@ -148,10 +158,18 @@ div.link.active {
 
 
 /* ----------
-   score box
+   stuff at the bottom
 */
 #scorebox {
     border: 1px solid grey;
     padding: 10px;
     margin-top: 10px;
 }
+
+#options {
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid grey;
+}
+
+
