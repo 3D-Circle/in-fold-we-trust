@@ -4,6 +4,7 @@ import update from 'immutability-helper';
 import ReactModal from 'react-modal';
 import {
     aminos,
+    calculateHHUpperBound,
     configFromSequence,
     findHHContact,
     findMapNeighbours,
@@ -201,6 +202,7 @@ class FoldingBoard extends Component {
     foldingIndicatorClick(direction) {
         // Called when a foldingIndicator is clicked
         let newAminos = this.state.currentPossibleRotations.get(direction);
+        console.log(calculateHHUpperBound(this.props.aminoString));
         this.setState(update(this.state, {
             aminoCoordMap: {$set: newAminos},
             grid: {$set: gridFromCoordMap(newAminos, this.state.grid.length)},

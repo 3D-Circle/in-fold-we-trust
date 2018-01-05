@@ -277,11 +277,25 @@ function findHHContact(aminoCoordMap) {
 }
 
 
+/**
+ * Calculate the optimal / upper bound of HH contacts in an AA sequence.
+ * @param {string} seq - a chain of amino acids represented using 'H' and 'P' for hydrophobic and hydrophilic AAs.
+ * @return {int} - the maximum possible HH contacts
+ */
+function calculateHHUpperBound(seq) {
+    const AAChain = Array.from(seq);
+    const evenHs = AAChain.filter((type, i) => type === 'H' && i % 2);
+    const oddHs = AAChain.filter((type, i) => type === 'H' && !(i % 2));
+    return 2 * Math.min(evenHs.length, oddHs.length)
+}
+
+
 export {
     // const
     aminos,
     // funcs
     configFromSequence,
+    calculateHHUpperBound,
     findHHContact,
     findMapNeighbours,
     findPossibleRotation,
