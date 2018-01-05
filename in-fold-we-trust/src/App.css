@@ -6,8 +6,8 @@ body {
 /* globals */
 
 button {
-    -webkit-border-radius: 7;
-    -moz-border-radius: 7;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
     border-radius: 7px;
     border-width: 0;
     color: black;
@@ -101,7 +101,7 @@ div#board-wrapper {
 
 .td.aa-cell.active2 {
     /*TODO Find color for rotation center*/
-    background: lightskyblue;
+    background: lightpink;
     /*border: 1px dotted lightcoral;*/
 }
 
@@ -142,7 +142,7 @@ div.aa.P {
 
 div.aa.H {
     /*TODO find color for hydrophobic amino acid*/
-    background: darkolivegreen;
+    background: #c10000;
 }
 
 /* ----------
@@ -150,7 +150,7 @@ div.aa.H {
 */
 div.link.active {
     /*TODO find color for links*/
-    background: tomato;
+    background: #a97055;
 }
 
 .td.tall > .link {
@@ -165,7 +165,7 @@ div.link.active {
     width: var(--small-cell-len);
     height: 5px;
     position: absolute;
-    top: calc(50% - 1px); left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%,-50%);
 }
 
