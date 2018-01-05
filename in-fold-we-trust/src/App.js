@@ -3,9 +3,14 @@ import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import ReactModal from 'react-modal';
 import {
-    configFromSequence, linkLocationGen,
-    aminos, findPossibleRotation, findMapNeighbours,
-    getFoldingIndicators, gridFromCoordMap, findHHContact
+    aminos,
+    configFromSequence,
+    findHHContact,
+    findMapNeighbours,
+    findPossibleRotation,
+    getFoldingIndicators,
+    gridFromCoordMap,
+    linkLocationGen
 } from './foldUtils.js';
 import './App.css';
 
@@ -24,9 +29,9 @@ class App extends Component {
     render() {
         return (
             <div id="wrapper">
-              <div id="title">HP Folding</div>
-              <Menu/>
-              <FoldingBoard aminoString={aminos}/>
+                <div id="title">HP Folding</div>
+                <Menu/>
+                <FoldingBoard aminoString={aminos}/>
             </div>
         );
     }
@@ -48,7 +53,7 @@ class Menu extends Component {
             [windowName + "Open"]: {$set: value}
         }));
     }
-    
+
     render() {
         return <div id="menu">
             <button className="menu-item" onClick={() => this.toggleModal("tutorial", true)}>Tutorial</button>
@@ -251,7 +256,7 @@ class FoldingBoard extends Component {
                     // check if the link should be coloured
                     let linkIsActive = joins.includes(singleLink.join("--"))
                         || joins.includes(singleLink.reverse().join("--"));
-                    
+
                     const isHHContact = HHs.includes(`${x}-${y}`);
 
                     tds.push(
@@ -291,7 +296,9 @@ class FoldingBoard extends Component {
         };
         return <div id="board-wrapper" style={dynamicStyle}>
             {this.createGrid(this.state.gridSize)}
-            <div id="scorebox">Current energy/stability: {this.state.score > 0 ? -this.state.score : this.state.score}</div>  {/* TODO find a better name */}
+            <div id="scorebox">Current
+                energy/stability: {this.state.score > 0 ? -this.state.score : this.state.score}</div>
+            {/* TODO find a better name */}
             <div id="options">Options</div>
         </div>;
     }
