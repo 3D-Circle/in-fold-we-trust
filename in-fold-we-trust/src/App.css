@@ -95,7 +95,14 @@ div#board-wrapper {
 }
 
 .td.aa-cell.active {
+    /*TODO Find color for selected cell*/
     background: lightgreen;
+}
+
+.td.aa-cell.active2 {
+    /*TODO Find color for rotation center*/
+    background: lightskyblue;
+    /*border: 1px dotted lightcoral;*/
 }
 
 .td.aa-link {
@@ -129,10 +136,12 @@ div.aa {
 }
 
 div.aa.P {
+    /*TODO find color for polar / hydrophilic amino acid*/
     background: royalblue;
 }
 
 div.aa.H {
+    /*TODO find color for hydrophobic amino acid*/
     background: darkolivegreen;
 }
 
@@ -140,6 +149,7 @@ div.aa.H {
    links 
 */
 div.link.active {
+    /*TODO find color for links*/
     background: tomato;
 }
 
@@ -189,6 +199,7 @@ div.link.active {
     /* position: relative; */
     /* top: 4.5px; */
     /* left: 4.5px; */
+    /*TODO Find color for folding indicator*/
     background: lightblue;
 }
 

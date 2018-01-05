@@ -212,7 +212,7 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
         if (outOfBounds) {
             console.log("this thing is out of bounds !");
         }
-        if ((aminoCoordMap.get(newPoint.join("-")) !== undefined) || outOfBounds) {
+        if (leftOverAminos.includes(newPoint.join("-")) || outOfBounds) {
             // one conflict = rotation impossible
             rotationPossible = false;
         }
