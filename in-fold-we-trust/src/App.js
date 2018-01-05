@@ -178,10 +178,8 @@ class FoldingBoard extends Component {
                     // checking if there is an AA at this location of the grid
                     let gridElementAtPos = this.state.grid[x / 2][y / 2];
                     // checking if the aa is active
-                    let isActive = false;
-                    if (this.state.selectedAmino === x / 2 + "-" + y / 2) {
-                        isActive = true;
-                    }
+                    let isActive = this.state.selectedAmino === x / 2 + "-" + y / 2;
+                    let isRotationOrigin = this.state.rotationAmino === x / 2 + "-" + y / 2;
                     // checking if there is a foldingIndicator
                     let foldingIndicatorDirection = this.state.foldingIndicators.get(x / 2 + "-" + y / 2);
                     tds.push(
@@ -190,6 +188,7 @@ class FoldingBoard extends Component {
                                        coords={x / 2 + "-" + y / 2}
                                        aminoClickCallback={gridElementAtPos ? this.aminoClick : this.resetToNormalState}
                                        isActive={isActive}
+                                       isRotationOrigin={isRotationOrigin}
                                        indicatorClickCallback={this.foldingIndicatorClick}/>
                     );
                 } else if ((x % 2) !== (y % 2)) {  // its a link cell
@@ -262,8 +261,7 @@ class AminoAcidCell extends Component {
         // we check if there is an aa through the hp prop
         if (this.props.hp) {
             cellContent =
-                <AminoAcid isActive={this.props.isActive}
-                           hp={this.props.hp} coords={this.props.coords}
+                <AminoAcid hp={this.props.hp} coords={this.props.coords}
                            aminoClickCallback={this.props.aminoClickCallback}/>;
         } else if (this.props.foldingIndicatorDirection) {
             // there might also be a foldingIndicator if there is no AA
@@ -276,7 +274,7 @@ class AminoAcidCell extends Component {
 
     render() {
         return (
-            <div className={["td", "aa-cell", this.props.isActive ? "active" : ""].join(" ")}
+            <div className={["td", "aa-cell", this.props.isActive ? "active" : "", this.props.isRotationOrigin ? "active2" : ""].join(" ")}
                  onClick={this.props.hp || this.props.foldingIndicatorDirection ? () => null : this.props.aminoClickCallback}>
                 {this.generateCellContent.bind(this)()}
             </div>
@@ -287,6 +285,7 @@ class AminoAcidCell extends Component {
 AminoAcidCell.propTypes = {
     coords: PropTypes.string.isRequired,
     isActive: PropTypes.bool.isRequired,
+    isRotationOrigin: PropTypes.bool.isRequired,
     hp: PropTypes.string,
     aminoClickCallback: PropTypes.func,
     indicatorClickCallback: PropTypes.func,
@@ -305,7 +304,6 @@ class AminoAcid extends Component {
 }
 
 AminoAcid.propTypes = {
-    isActive: PropTypes.bool.isRequired,
     coords: PropTypes.string.isRequired,
     hp: PropTypes.string.isRequired,
     aminoClickCallback: PropTypes.func.isRequired
