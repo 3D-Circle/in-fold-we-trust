@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import update from 'immutability-helper';
+import ReactModal from 'react-modal';
 import {
     configFromSequence, linkLocationGen,
     aminos, findPossibleRotation, findMapNeighbours,
     getFoldingIndicators, gridFromCoordMap, findHHContact
 } from './foldUtils.js';
 import './App.css';
-import update from 'immutability-helper';
 
 
 /* 
@@ -16,14 +17,15 @@ import update from 'immutability-helper';
    FoldingIndicators = blue squares on which the user clicks to chose his folding direction
 */
 
+ReactModal.setAppElement('#root');
+
 
 class App extends Component {
     render() {
-        let menuItems = [["Tutorial", undefined], ["Explanation", undefined]];
         return (
             <div id="wrapper">
               <div id="title">HP Folding</div>
-              <Menu menuItems={menuItems}/>
+              <Menu/>
               <FoldingBoard aminoString={aminos}/>
             </div>
         );
@@ -31,18 +33,64 @@ class App extends Component {
 }
 
 class Menu extends Component {
+    constructor(props) {
+        super();
+        this.state = {
+            tutorialOpen: false,
+            explanationOpen: false
+        };
+
+        this.toggleModal = this.toggleModal.bind(this);
+    }
+
+    toggleModal(windowName, value) {
+        this.setState(update(this.state, {
+            [windowName + "Open"]: {$set: value}
+        }));
+    }
+    
     render() {
         return <div id="menu">
-            {this.props.menuItems.map(
-                ([name, callback]) =>
-                    <div className="menu-item" key={name} onClick={callback}>{name}</div>
-            )}
+            <button className="menu-item" onClick={() => this.toggleModal("tutorial", true)}>Tutorial</button>
+            <button className="menu-item" onClick={() => this.toggleModal("explanation", true)}>Explanation</button>
+            <ReactModal isOpen={this.state.tutorialOpen}
+                        onRequestClose={() => this.toggleModal("tutorial", false)}>
+                <Tutorial closingCallback={() => this.toggleModal("tutorial", false)}/>
+            </ReactModal>
+            <ReactModal isOpen={this.state.explanationOpen}
+                        onRequestClose={() => this.toggleModal("explanation", false)}>
+                <Explanation closingCallback={() => this.toggleModal("explanation", false)}/>
+            </ReactModal>
         </div>;
     }
 }
 
-Menu.propTypes = {
-    menuItems: PropTypes.array.isRequired
+
+class Tutorial extends Component {
+    render() {
+        return <div className="modal-wrapper">
+            Hello from Tutorial
+            <button onClick={this.props.closingCallback}>Exit</button>
+        </div>;
+    }
+}
+
+Tutorial.propTypes = {
+    closingCallback: PropTypes.func.isRequired
+};
+
+
+class Explanation extends Component {
+    render() {
+        return <div className="modal-wrapper">
+            Hello from Explanation
+            <button onClick={this.props.closingCallback}>Exit</button>
+        </div>;
+    }
+}
+
+Explanation.propTypes = {
+    closingCallback: PropTypes.func.isRequired
 };
 
 

@@ -3,6 +3,28 @@ body {
     font-family: "Open Sans", sans-serif;
 }
 
+/* globals */
+
+button {
+    -webkit-border-radius: 7;
+    -moz-border-radius: 7;
+    border-radius: 7px;
+    border-width: 0;
+    color: black;
+    font-family: "Open Sans", sans-serif;
+    background: lightblue;
+    padding: 5px 10px;
+    text-decoration: none;
+}
+
+
+button:hover {
+  background: #3cb0fd;
+  text-decoration: none;
+}
+
+/* content */
+
 div#wrapper {
     text-align: center;
 }
@@ -24,6 +46,20 @@ div#menu {
     margin-left: 10px;
     background: lightblue;
 }
+
+
+/* ----------
+   modals
+*/
+.modal-wrapper > button {
+    display: block;
+    margin-top:20px;    
+}
+
+.ReactModal__Overlay {
+    z-index: 10;
+}
+
 
 /* --- Folding Board --- */
 
