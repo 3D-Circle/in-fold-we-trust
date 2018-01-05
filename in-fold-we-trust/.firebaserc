@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "production": "hp-folding",
+    "default": "hp-folding"
+  }
+}
