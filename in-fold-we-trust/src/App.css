@@ -193,7 +193,7 @@ div.link.active {
 /* ----------
    folding indicators 
 */
-.folding-indicator {
+.td.folding-indicator {
     height: calc(var(--normal-cell-len) - 2px);
     width: calc(var(--normal-cell-len) - 2px);
     /* position: relative; */

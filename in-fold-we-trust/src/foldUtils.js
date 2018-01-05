@@ -3,7 +3,7 @@
 */
 
 
-const aminos = "HPHPPHHPHPPHPHHPPHPH";
+const aminos = "HPHHPPHP";
 
 
 const empty2dArray = (n) =>

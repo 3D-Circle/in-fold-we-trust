@@ -303,28 +303,17 @@ FoldingBoard.propTypes = {
 
 
 class AminoAcidCell extends Component {
-    // a Cell can be empty or have an AA
-    generateCellContent() {
-        let cellContent = undefined;
-        // we check if there is an aa through the hp prop
-        if (this.props.hp) {
-            cellContent =
-                <AminoAcid hp={this.props.hp} coords={this.props.coords}
-                           aminoClickCallback={this.props.aminoClickCallback}/>;
-        } else if (this.props.foldingIndicatorDirection) {
-            // there might also be a foldingIndicator if there is no AA
-            cellContent =
-                <FoldingIndicator direction={this.props.foldingIndicatorDirection}
-                                  indicatorClickCallback={this.props.indicatorClickCallback}/>;
-        }
-        return cellContent;
-    }
-
     render() {
+        let onClickCallBack = this.props.foldingIndicatorDirection ? () => this.props.indicatorClickCallback(this.props.foldingIndicatorDirection)
+            : !this.props.hp ? this.props.aminoClickCallback /*resetToNormalState here*/ : () => null;
         return (
-            <div className={["td", "aa-cell", this.props.isActive ? "active" : "", this.props.isRotationOrigin ? "active2" : ""].join(" ")}
-                 onClick={this.props.hp || this.props.foldingIndicatorDirection ? () => null : this.props.aminoClickCallback}>
-                {this.generateCellContent.bind(this)()}
+            <div
+                className={["td", "aa-cell", this.props.isActive ? "active" : "", this.props.isRotationOrigin ? "active2" : "", this.props.foldingIndicatorDirection ? "folding-indicator" : ""].join(" ")}
+                onClick={onClickCallBack}>
+                {this.props.hp ?
+                    <AminoAcid hp={this.props.hp} coords={this.props.coords}
+                               aminoClickCallback={() => this.props.aminoClickCallback(this.props.coords)}/>
+                    : ''}
             </div>
         );
     }
@@ -345,14 +334,13 @@ class AminoAcid extends Component {
     render() {
         return (
             <div className={["aa", this.props.hp].join(" ")}
-                 onClick={() => this.props.aminoClickCallback(this.props.coords)}>
+                 onClick={this.props.aminoClickCallback}>
             </div>
         );
     }
 }
 
 AminoAcid.propTypes = {
-    coords: PropTypes.string.isRequired,
     hp: PropTypes.string.isRequired,
     aminoClickCallback: PropTypes.func.isRequired
 };
@@ -362,13 +350,12 @@ class FoldingIndicator extends Component {
     render() {
         return (
             <div className="folding-indicator"
-                 onClick={() => this.props.indicatorClickCallback(this.props.direction)}/>
+                 onClick={this.props.indicatorClickCallback}/>
         );
     }
 }
 
 FoldingIndicator.propTypes = {
-    direction: PropTypes.number.isRequired,  // either +1 or -1
     indicatorClickCallback: PropTypes.func.isRequired
 };
 
