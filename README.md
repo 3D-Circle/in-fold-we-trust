@@ -1,3 +1,3 @@
 # HP-Folder
 
-Our CTB project. Website link coming soon !
+https://hp-folding.firebaseapp.com
