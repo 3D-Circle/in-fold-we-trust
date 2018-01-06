@@ -224,6 +224,11 @@ class FoldingBoard extends Component {
 
     resetConfig(newAminoString=this.state.aminoString, optimalScore=null) {
         let r = configFromSequence(newAminoString);
+        if (newAminoString.replace(/H/g, '').replace(/P/g, '')) {
+            // TODO improve warning
+            alert("Cannot read custom input: HP string contains characters other than 'H' and 'P'.");
+            return
+        }
         this.setState(update(this.state, {
             aminoString: {$set: newAminoString},
             aminoCoordMap: {$set: r[0]},
