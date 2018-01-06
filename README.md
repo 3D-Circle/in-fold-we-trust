@@ -8,6 +8,6 @@ If you know what you're doing and want to tweak the code at home, you'll need gi
     git clone https://github.com/3D-Circle/in-fold-we-trust.git
     cd in-fold-we-trust/in-fold-we-trust
     npm install
-    npm start
+    npm run start
     
-Then visit localhost:3000 in your browser if its not already there.
+Then visit localhost:3000 in your browser if the window hasn't already been opened.
