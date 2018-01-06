@@ -230,7 +230,7 @@ class FoldingBoard extends Component {
             grid: {$set: r[1]},
             gridSize: {$set: r[1].length},
             optimalScore: {$set: optimalScore === "previous" ?
-                this.state.optimalScore : optimalScore || ' ≤ ' + calculateHHUpperBound(newAminoString)}
+                this.state.optimalScore : optimalScore || ' ≤ -' + calculateHHUpperBound(newAminoString)}
         }))
     }
 
