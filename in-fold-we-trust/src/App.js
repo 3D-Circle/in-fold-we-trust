@@ -123,54 +123,53 @@ class Options extends Component {
     constructor() {
         super();
         this.selectCallback = this.selectCallback.bind(this);
-        this.toggleCustomStringModal = this.toggleCustomStringModal.bind(this);
-        this.selectOnClick = this.selectOnClick.bind(this);
+        this.onInputEdit = this.onInputEdit.bind(this);
         this.state = {
-            customAminoStringInputOpen: false
+            customMode: false,
+            customInputString: ""
         }
-    }
-
-    selectOnClick(event) {
-        // this.toggleCustomStringModal(true);
-        this.selectCallback(event)
     }
 
     selectCallback(event) {
         let newAminoString = event.target.value;
-        if (newAminoString === "custom") {
-            this.toggleCustomStringModal(true);
-        } else {
+        this.setState(update(this.state, {
+            customMode: {$set: newAminoString === "custom"}
+        }));
+        if (newAminoString !== "custom") {
             this.props.changeAminoStringCallback(newAminoString, this.props.aminoConfigs.get(newAminoString));
         }
     }
 
-    toggleCustomStringModal(isOpen) {
+    onInputEdit(e) {
         this.setState(update(this.state, {
-            customAminoStringInputOpen: {$set: isOpen},
+            customInputString: {$set: e.target.value}
         }))
     }
 
     render() {
-        let closingCallback = () => this.toggleCustomStringModal(false);
         return (
             <div id="options">
-
-                <ReactModal isOpen={this.state.customAminoStringInputOpen} onRequestClose={closingCallback}>
-                    <CustomAminoStringInputModal closingCallback={closingCallback}
-                                                 changeAminoStringCallback={this.props.changeAminoStringCallback}/>
-                </ReactModal>
-
+                {/* Reset Button */}
                 <button onClick={() => this.props.resetCallback(undefined, "previous")}>Reset Configuration</button>
-
+                {/* Level selector */}
                 <select name="aminoStringSelect" id="aminoStringSelect"
-                        onChange={this.selectOnClick}>
+                        onChange={this.selectCallback}>
                     {Array.from(this.props.aminoConfigs.entries()).map(
                         ([aminoString, stability], ind) =>
                             <option value={aminoString} key={ind}>Level {ind + 1} ({aminoString})</option>
                     )}
                     <option value="custom">Custom input</option>
                 </select>
-
+                {/* Custom */}
+                <br/>
+                {this.state.customMode ?
+                    <div id="options-custom-area">
+                        <input type="text" placeholder="Custom HP string"
+                               value={this.state.customInputString} onChange={this.onInputEdit}/>
+                        <button onClick={() => this.props.changeAminoStringCallback(this.state.customInputString)}>
+                            Apply custom
+                        </button>
+                    </div> : null}
             </div>
         );
     }
@@ -181,42 +180,6 @@ Options.propTypes = {
     changeAminoStringCallback: PropTypes.func.isRequired,
     aminoConfigs: PropTypes.object.isRequired
 };
-
-
-class CustomAminoStringInputModal extends Component {
-    constructor() {
-        super();
-        this.onInputEdit = this.onInputEdit.bind(this);
-        this.state = {
-            customInput: ""
-        }
-    }
-
-    onInputEdit(e) {
-        this.setState(update(this.state, {
-            customInput: {$set: e.target.value}
-        }))
-    }
-
-    render() {
-        let buttonOnClick = () => {
-            this.props.changeAminoStringCallback(this.state.customInput);
-            this.props.closingCallback();
-        };
-        return <ModalTemplate title={"Custom Input"} closingCallback={this.props.closingCallback}>
-            <input type="text" value={this.state.customInput} onChange={this.onInputEdit}/>
-            <button onClick={buttonOnClick}>
-                Validate
-            </button>
-        </ModalTemplate>
-    }
-}
-
-CustomAminoStringInputModal.propTypes = {
-    closingCallback: PropTypes.func.isRequired,
-    changeAminoStringCallback: PropTypes.func.isRequired
-};
-
 
 
 class FoldingBoard extends Component {
@@ -288,7 +251,8 @@ class FoldingBoard extends Component {
             if (coords === this.state.selectedAmino) {
                 alert(
                     "Rotation amino cannot be the same as origin." +
-                    "\nIf you want to cancel the operation, click anywhere on the empty grid."
+                    "\nIf you want to cancel the operation, click anywhere on the empty grid." +
+                    "\nIf you're confused, check out the tutorial."
                 );
             } else if (neighbourAminos.includes(coords) === false) {
                 this.setState(update(this.state, {

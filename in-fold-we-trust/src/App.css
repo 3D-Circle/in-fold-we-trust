@@ -89,6 +89,13 @@ div#menu {
     margin-right: 0;
 }
 
+#options-custom-area {
+    margin-top: 5px;
+}
+
+#options-custom-area button {
+    margin-left: 5px
+}
 
 div#board-wrapper {
     display: inline-block;
