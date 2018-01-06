@@ -63,6 +63,22 @@ div#menu {
 
 /* --- Folding Board --- */
 
+
+#options {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid grey;
+}
+
+#options > * {
+    margin-right: 5px;
+}
+
+#options > *:last-child {
+    margin-right: 0;
+}
+
+
 div#board-wrapper {
     display: inline-block;
     --normal-cell-len: 35px;
@@ -211,12 +227,6 @@ div.link.active {
     border: 1px solid grey;
     padding: 10px;
     margin-top: 10px;
-}
-
-#options {
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid grey;
 }
 
 

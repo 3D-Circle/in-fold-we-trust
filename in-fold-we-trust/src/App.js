@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import ReactModal from 'react-modal';
 import {
-    aminos,
     calculateHHUpperBound,
     configFromSequence,
     findHHContact,
@@ -32,14 +31,14 @@ class App extends Component {
             <div id="wrapper">
                 <div id="title">HP Folding</div>
                 <Menu/>
-                <FoldingBoard aminoString={aminos}/>
+                <FoldingBoard/>
             </div>
         );
     }
 }
 
 class Menu extends Component {
-    constructor(props) {
+    constructor() {
         super();
         this.state = {
             tutorialOpen: false,
@@ -110,9 +109,12 @@ class FoldingBoard extends Component {
         this.generateFoldingIndicators = this.generateFoldingIndicators.bind(this);
         this.foldingIndicatorClick = this.foldingIndicatorClick.bind(this);
         this.resetToNormalState = this.resetToNormalState.bind(this);
+        this.resetConfig = this.resetConfig.bind(this);
 
-        let r = configFromSequence(this.props.aminoString);  // TODO give the user the ability to change aminoString
+        let defaultAminoString = "HPHHPPHP";
+        let r = configFromSequence(defaultAminoString);
         this.state = {
+            aminoString: defaultAminoString,
             gridSize: r[1].length,
             // a Map object with the structure:
             // { aminoCoords -> HP-property } (either "H" or "P")
@@ -127,15 +129,26 @@ class FoldingBoard extends Component {
             currentPossibleRotations: new Map(),
             // the current step in which the board is
             // "normal": if the user selected nothing
-            // "chooseRotation": if the user has chosen an origin and is chosing the rotation point
+            // "chooseRotation": if the user has chosen an origin and is choosing the rotation point
             // "chooseDirection": the user is choosing the rotation direction
             foldingStep: "normal",
             selectedAmino: "",  // coords are as string, "x-y"
             rotationAmino: "",
-            score: findHHContact(r[0]).length
+            score: findHHContact(r[0]).length,
+            optimalScore: -2
         };
     }
 
+    resetConfig(newAminoString=this.state.aminoString, optimalScore=null) {
+        let r = configFromSequence(newAminoString);
+        this.setState(update(this.state, {
+            aminoString: {$set: newAminoString},
+            aminoCoordMap: {$set: r[0]},
+            grid: {$set: r[1]},
+            gridSize: {$set: r[1].length},
+            optimalScore: {$set: optimalScore}
+        }))
+    }
 
     aminoClick(coords) {
         // This is the callback function when an amino is clicked
@@ -151,10 +164,11 @@ class FoldingBoard extends Component {
             let neighbourAminos = findMapNeighbours(
                 this.state.aminoCoordMap, this.state.selectedAmino
             );
-            console.log(neighbourAminos);
-            console.log(neighbourAminos.includes(coords));
             if (coords === this.state.selectedAmino) {
-                alert("You must select a different amino\nTODO make that a better dialog");
+                alert(
+                    "Rotation amino cannot be the same as origin." +
+                    "\nIf you want to cancel the operation, click anywhere on the empty grid."
+                );
             } else if (neighbourAminos.includes(coords) === false) {
                 this.setState(update(this.state, {
                     selectedAmino: {$set: coords},
@@ -202,7 +216,7 @@ class FoldingBoard extends Component {
     foldingIndicatorClick(direction) {
         // Called when a foldingIndicator is clicked
         let newAminos = this.state.currentPossibleRotations.get(direction);
-        console.log(calculateHHUpperBound(this.props.aminoString));
+        console.log(calculateHHUpperBound(this.state.aminoString));
         this.setState(update(this.state, {
             aminoCoordMap: {$set: newAminos},
             grid: {$set: gridFromCoordMap(newAminos, this.state.grid.length)},
@@ -296,18 +310,61 @@ class FoldingBoard extends Component {
             "--normal-cell-len": normalCellLen + "px",
             "--small-cell-len": smallCellLen + "px"
         };
+        let aminoConfigs = new Map([
+            ["HPHHPPHP", -2],
+            ["PHHHHPPPPPPHHHHHHH", -5]
+        ]);
         return <div id="board-wrapper" style={dynamicStyle}>
+            <Options resetCallback={this.resetConfig}
+                     changeAminoStringCallback={this.resetConfig}
+                     aminoConfigs={aminoConfigs}/>
             {this.createGrid(this.state.gridSize)}
-            <div id="scorebox">Current
-                energy/stability: {this.state.score > 0 ? -this.state.score : this.state.score}</div>
+            <div id="scorebox">
+                Current energy score: {this.state.score > 0 ? -this.state.score : this.state.score}
+                <br/>
+                {this.state.optimalScore !== null ?
+                    <span>Maximum energy score: {this.state.optimalScore}</span> : null}
+                </div>
             {/* TODO find a better name */}
-            <div id="options">Options</div>
         </div>;
     }
 }
 
 FoldingBoard.propTypes = {
-    aminoString: PropTypes.string.isRequired
+    // aminoString: PropTypes.string.isRequired
+};
+
+
+class Options extends Component {
+    constructor() {
+        super();
+        this.selectCallback = this.selectCallback.bind(this);
+    }
+
+    selectCallback(event) {
+        let newAminoString = event.target.value;
+        this.props.changeAminoStringCallback(newAminoString, this.props.aminoConfigs.get(newAminoString));
+    }
+
+    render() {
+        return (
+            <div id="options">
+                <button onClick={() => this.props.resetCallback(undefined)}>Reset Configuration</button>
+                <select name="aminoStringSelect" id="aminoStringSelect" onChange={this.selectCallback}>
+                    {Array.from(this.props.aminoConfigs.entries()).map(
+                        ([aminoString, stability], ind) =>
+                            <option value={aminoString} key={ind}>Level {ind + 1} ({aminoString})</option>
+                    )}
+                </select>
+            </div>
+        );
+    }
+}
+
+Options.propTypes = {
+    resetCallback: PropTypes.func.isRequired,
+    changeAminoStringCallback: PropTypes.func.isRequired,
+    aminoConfigs: PropTypes.object.isRequired
 };
 
 

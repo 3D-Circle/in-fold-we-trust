@@ -2,10 +2,6 @@
   Functions to calculate folding stuff
 */
 
-
-const aminos = "HPHHPPHP";
-
-
 const empty2dArray = (n) =>
     new Array(n).fill(undefined).map(() => new Array(n).fill(undefined)); // to avoid the [None] * x syndrome
 
@@ -95,8 +91,6 @@ function getFoldingIndicators(_aaOrigin, _aaRotationPoint, gridSize, directionVa
     let aaRotationPoint = _aaRotationPoint.split("-").map((x) => parseInt(x, 10));
     let foldingIndicatorCoords = new Map();
     let direction;
-    console.log("DIRECTION VALIDITY");
-    console.log(directionValidity);
     if (aaOrigin[0] === aaRotationPoint[0]) {
         if (aaRotationPoint[0] + 1 < gridSize) {
             direction = aaOrigin[1] < aaRotationPoint[1] ? -1 : 1;
@@ -209,9 +203,9 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
         let outOfBounds = newPoint.findIndex(
             (x) => x < 0 || x >= gridSize
         ) > -1;
-        if (outOfBounds) {
-            console.log("this thing is out of bounds !");
-        }
+        // if (outOfBounds) {
+        //     console.log("this thing is out of bounds !");
+        // }
         if (leftOverAminos.includes(newPoint.join("-")) || outOfBounds) {
             // one conflict = rotation impossible
             rotationPossible = false;
@@ -234,10 +228,10 @@ function findPossibleRotation(aminoCoordMap, aaOrigin, aaRotationPoint, directio
         } else {
             throw new Error("THIS SHOULD NEVER HAPPEN");
         }
-        console.log(fullAminoChain);
+        // console.log(fullAminoChain);
         return fullAminoChain;
     } else {
-        console.log("Rotation impossible !");
+        // console.log("Rotation impossible !");
         return undefined;
     }
 }
@@ -291,9 +285,6 @@ function calculateHHUpperBound(seq) {
 
 
 export {
-    // const
-    aminos,
-    // funcs
     configFromSequence,
     calculateHHUpperBound,
     findHHContact,
