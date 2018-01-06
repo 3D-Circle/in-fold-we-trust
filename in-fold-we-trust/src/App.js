@@ -266,7 +266,8 @@ class FoldingBoard extends Component {
             aminoCoordMap: {$set: r[0]},
             grid: {$set: r[1]},
             gridSize: {$set: r[1].length},
-            optimalScore: {$set: optimalScore === "previous" ? this.state.optimalScore : optimalScore}
+            optimalScore: {$set: optimalScore === "previous" ?
+                this.state.optimalScore : optimalScore || ' ≤ ' + calculateHHUpperBound(newAminoString)}
         }))
     }
 
@@ -336,7 +337,6 @@ class FoldingBoard extends Component {
     foldingIndicatorClick(direction) {
         // Called when a foldingIndicator is clicked
         let newAminos = this.state.currentPossibleRotations.get(direction);
-        console.log(calculateHHUpperBound(this.state.aminoString));
         this.setState(update(this.state, {
             aminoCoordMap: {$set: newAminos},
             grid: {$set: gridFromCoordMap(newAminos, this.state.grid.length)},
@@ -442,7 +442,7 @@ class FoldingBoard extends Component {
             <div id="scorebox">
                 Current energy score: {this.state.score > 0 ? -this.state.score : this.state.score}
                 <br/>
-                {this.state.optimalScore !== null ? <span>Maximum energy score: {this.state.optimalScore}</span> : null}
+                <span>Maximum energy score: {this.state.optimalScore}</span>
             </div>
         </div>;
     }
