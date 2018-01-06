@@ -51,13 +51,24 @@ div#menu {
 /* ----------
    modals
 */
-.modal-wrapper > button {
-    display: block;
-    margin-top:20px;    
-}
-
 .ReactModal__Overlay {
     z-index: 10;
+}
+
+.modal-title {
+    margin-bottom: 20px;
+}
+
+.modal-title > h3 {
+    display: inline;
+}
+
+.modal-title > button {
+    float: right;
+}
+
+.modal-content > button {
+    margin: 10px;
 }
 
 

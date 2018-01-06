@@ -37,6 +37,7 @@ class App extends Component {
     }
 }
 
+
 class Menu extends Component {
     constructor() {
         super();
@@ -71,12 +72,32 @@ class Menu extends Component {
 }
 
 
-class Tutorial extends Component {
+class ModalTemplate extends Component {
     render() {
         return <div className="modal-wrapper">
-            Hello from Tutorial
-            <button onClick={this.props.closingCallback}>Exit</button>
+            <div className="modal-title">
+                <h3>{this.props.title}</h3>
+                <button onClick={this.props.closingCallback}>Exit</button>
+            </div>
+
+            <div className="modal-content">
+                {this.props.children}
+            </div>
         </div>;
+    }
+}
+
+ModalTemplate.propTypes = {
+    title: PropTypes.string.isRequired,
+    closingCallback: PropTypes.func.isRequired
+};
+
+
+class Tutorial extends Component {
+    render() {
+        return <ModalTemplate title="Tutorial" closingCallback={this.props.closingCallback}>
+                Hello from Tutorial
+        </ModalTemplate>
     }
 }
 
@@ -87,16 +108,117 @@ Tutorial.propTypes = {
 
 class Explanation extends Component {
     render() {
-        return <div className="modal-wrapper">
-            Hello from Explanation
-            <button onClick={this.props.closingCallback}>Exit</button>
-        </div>;
+        return <ModalTemplate title={"Explanation"} closingCallback={this.props.closingCallback}>
+                Hello from Explanation
+        </ModalTemplate>
     }
 }
 
 Explanation.propTypes = {
     closingCallback: PropTypes.func.isRequired
 };
+
+
+class Options extends Component {
+    constructor() {
+        super();
+        this.selectCallback = this.selectCallback.bind(this);
+        this.toggleCustomStringModal = this.toggleCustomStringModal.bind(this);
+        this.selectOnClick = this.selectOnClick.bind(this);
+        this.state = {
+            customAminoStringInputOpen: false
+        }
+    }
+
+    selectOnClick(event) {
+        if (event.detail === 0) {
+            // this.toggleCustomStringModal(true);
+            this.selectCallback(event)
+        }
+    }
+
+    selectCallback(event) {
+        let newAminoString = event.target.value;
+        if (newAminoString === "custom") {
+            this.toggleCustomStringModal(true);
+        } else {
+            this.props.changeAminoStringCallback(newAminoString, this.props.aminoConfigs.get(newAminoString));
+        }
+    }
+
+    toggleCustomStringModal(isOpen) {
+        this.setState(update(this.state, {
+            customAminoStringInputOpen: {$set: isOpen},
+        }))
+    }
+
+    render() {
+        let closingCallback = () => this.toggleCustomStringModal(false);
+        return (
+            <div id="options">
+
+                <ReactModal isOpen={this.state.customAminoStringInputOpen} onRequestClose={closingCallback}>
+                    <CustomAminoStringInputModal closingCallback={closingCallback}
+                                                 changeAminoStringCallback={this.props.changeAminoStringCallback}/>
+                </ReactModal>
+
+                <button onClick={() => this.props.resetCallback(undefined, "previous")}>Reset Configuration</button>
+
+                <select name="aminoStringSelect" id="aminoStringSelect"
+                        onClick={this.selectOnClick}>
+                    {Array.from(this.props.aminoConfigs.entries()).map(
+                        ([aminoString, stability], ind) =>
+                            <option value={aminoString} key={ind}>Level {ind + 1} ({aminoString})</option>
+                    )}
+                    <option value="custom">Custom input</option>
+                </select>
+
+            </div>
+        );
+    }
+}
+
+Options.propTypes = {
+    resetCallback: PropTypes.func.isRequired,
+    changeAminoStringCallback: PropTypes.func.isRequired,
+    aminoConfigs: PropTypes.object.isRequired
+};
+
+
+class CustomAminoStringInputModal extends Component {
+    constructor() {
+        super();
+        this.onInputEdit = this.onInputEdit.bind(this);
+        this.state = {
+            customInput: ""
+        }
+    }
+
+    onInputEdit(e) {
+        this.setState(update(this.state, {
+            customInput: {$set: e.target.value}
+        }))
+    }
+
+    render() {
+        let buttonOnClick = () => {
+            this.props.changeAminoStringCallback(this.state.customInput);
+            this.props.closingCallback();
+        };
+        return <ModalTemplate title={"Custom Input"} closingCallback={this.props.closingCallback}>
+            <input type="text" value={this.state.customInput} onChange={this.onInputEdit}/>
+            <button onClick={buttonOnClick}>
+                Validate
+            </button>
+        </ModalTemplate>
+    }
+}
+
+CustomAminoStringInputModal.propTypes = {
+    closingCallback: PropTypes.func.isRequired,
+    changeAminoStringCallback: PropTypes.func.isRequired
+};
+
 
 
 class FoldingBoard extends Component {
@@ -146,7 +268,7 @@ class FoldingBoard extends Component {
             aminoCoordMap: {$set: r[0]},
             grid: {$set: r[1]},
             gridSize: {$set: r[1].length},
-            optimalScore: {$set: optimalScore}
+            optimalScore: {$set: optimalScore === "previous" ? this.state.optimalScore : optimalScore}
         }))
     }
 
@@ -312,7 +434,7 @@ class FoldingBoard extends Component {
         };
         let aminoConfigs = new Map([
             ["HPHHPPHP", -2],
-            ["PHHHHPPPPPPHHHHHHH", -5]
+            ["PHHHHPPPPPPHHHHHHH", -6]
         ]);
         return <div id="board-wrapper" style={dynamicStyle}>
             <Options resetCallback={this.resetConfig}
@@ -322,49 +444,14 @@ class FoldingBoard extends Component {
             <div id="scorebox">
                 Current energy score: {this.state.score > 0 ? -this.state.score : this.state.score}
                 <br/>
-                {this.state.optimalScore !== null ?
-                    <span>Maximum energy score: {this.state.optimalScore}</span> : null}
-                </div>
-            {/* TODO find a better name */}
+                {this.state.optimalScore !== null ? <span>Maximum energy score: {this.state.optimalScore}</span> : null}
+            </div>
         </div>;
     }
 }
 
 FoldingBoard.propTypes = {
     // aminoString: PropTypes.string.isRequired
-};
-
-
-class Options extends Component {
-    constructor() {
-        super();
-        this.selectCallback = this.selectCallback.bind(this);
-    }
-
-    selectCallback(event) {
-        let newAminoString = event.target.value;
-        this.props.changeAminoStringCallback(newAminoString, this.props.aminoConfigs.get(newAminoString));
-    }
-
-    render() {
-        return (
-            <div id="options">
-                <button onClick={() => this.props.resetCallback(undefined)}>Reset Configuration</button>
-                <select name="aminoStringSelect" id="aminoStringSelect" onChange={this.selectCallback}>
-                    {Array.from(this.props.aminoConfigs.entries()).map(
-                        ([aminoString, stability], ind) =>
-                            <option value={aminoString} key={ind}>Level {ind + 1} ({aminoString})</option>
-                    )}
-                </select>
-            </div>
-        );
-    }
-}
-
-Options.propTypes = {
-    resetCallback: PropTypes.func.isRequired,
-    changeAminoStringCallback: PropTypes.func.isRequired,
-    aminoConfigs: PropTypes.object.isRequired
 };
 
 
