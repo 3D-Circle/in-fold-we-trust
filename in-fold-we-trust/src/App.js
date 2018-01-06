@@ -131,10 +131,8 @@ class Options extends Component {
     }
 
     selectOnClick(event) {
-        if (event.detail === 0) {
-            // this.toggleCustomStringModal(true);
-            this.selectCallback(event)
-        }
+        // this.toggleCustomStringModal(true);
+        this.selectCallback(event)
     }
 
     selectCallback(event) {
@@ -165,7 +163,7 @@ class Options extends Component {
                 <button onClick={() => this.props.resetCallback(undefined, "previous")}>Reset Configuration</button>
 
                 <select name="aminoStringSelect" id="aminoStringSelect"
-                        onClick={this.selectOnClick}>
+                        onChange={this.selectOnClick}>
                     {Array.from(this.props.aminoConfigs.entries()).map(
                         ([aminoString, stability], ind) =>
                             <option value={aminoString} key={ind}>Level {ind + 1} ({aminoString})</option>
