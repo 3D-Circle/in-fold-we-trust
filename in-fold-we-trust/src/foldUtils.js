@@ -277,10 +277,17 @@ function findHHContact(aminoCoordMap) {
  * @return {int} - the maximum possible HH contacts
  */
 function calculateHHUpperBound(seq) {
+    if (seq.length <= 3) {
+        return 0
+    }
     const AAChain = Array.from(seq);
     const evenHs = AAChain.filter((type, i) => type === 'H' && i % 2);
     const oddHs = AAChain.filter((type, i) => type === 'H' && !(i % 2));
-    return 2 * Math.min(evenHs.length, oddHs.length)
+    let optimalHHContacts = 2 * Math.min(evenHs.length, oddHs.length);
+    if ((AAChain[0] === 'H' || AAChain[AAChain.length] === 'H') && AAChain.length >= 8) {
+        optimalHHContacts += 1;
+    }
+    return optimalHHContacts
 }
 
 
