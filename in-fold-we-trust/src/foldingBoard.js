@@ -59,7 +59,10 @@ class Options extends Component {
                 {this.state.customMode ?
                     <div id="options-custom-area">
                         <input type="text" placeholder="Custom HP string"
-                               value={this.state.customInputString} onChange={this.onInputEdit}/>
+                               value={this.state.customInputString}
+                               onChange={this.onInputEdit}
+                               onKeyPress={(e) => e.key === 'Enter' ? this.props.changeAminoStringCallback(this.state.customInputString) : null}
+                        />
                         <button onClick={() => this.props.changeAminoStringCallback(this.state.customInputString)}>
                             Apply custom
                         </button>
@@ -116,7 +119,7 @@ class FoldingBoard extends Component {
         };
     }
 
-    resetConfig(newAminoString=this.state.aminoString, optimalScore=null) {
+    resetConfig(newAminoString = this.state.aminoString, optimalScore = null) {
         let r = configFromSequence(newAminoString);
         if (newAminoString.replace(/H/g, '').replace(/P/g, '')) {
             // TODO improve warning
@@ -128,8 +131,10 @@ class FoldingBoard extends Component {
             aminoCoordMap: {$set: r[0]},
             grid: {$set: r[1]},
             gridSize: {$set: r[1].length},
-            optimalScore: {$set: optimalScore === "previous" ?
-                this.state.optimalScore : optimalScore || ' ≤ -' + calculateHHUpperBound(newAminoString)}
+            optimalScore: {
+                $set: optimalScore === "previous" ?
+                    this.state.optimalScore : optimalScore || ' ≤ -' + calculateHHUpperBound(newAminoString)
+            }
         }))
     }
 
