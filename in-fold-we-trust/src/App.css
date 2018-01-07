@@ -69,6 +69,14 @@ div#menu {
     margin: 10px;
 }
 
+.modal-content > img {
+    max-width: 70%;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+}
+
+
 /* --- Folding Board --- */
 
 #options {

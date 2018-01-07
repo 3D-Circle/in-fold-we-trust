@@ -1,16 +1,18 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ModalTemplate from "./modal";
-import startImg from './img/start.png';
-import contactHH from './img/HH-contact.png';
-import chainInitial from './img/chain-initial.png';
-import chainFolded from './img/chain-folded-HH.png';
-import chainFolding from './img/chain-folding.png';
-import step1_1 from './img/step1-1.png';
-import step2_2 from './img/step1-2.png';
-import foldSuccess from './img/fold-success.gif';
-import foldFail1 from './img/fold-fail1.gif';
-import foldFail2 from './img/fold-fail2.gif';
+// images
+import startImg from './img/tutorial/start.png';
+import contactHH from './img/tutorial/HH-contact.png';
+import chainInitial from './img/tutorial/chain-initial.png';
+import chainFolded from './img/tutorial/chain-folded-HH.png';
+import chainFolding from './img/tutorial/chain-folding.png';
+import step1_1 from './img/tutorial/step1-1.png';
+import step2_2 from './img/tutorial/step1-2.png';
+import foldSuccess from './img/tutorial/fold-success.gif';
+import foldFail1 from './img/tutorial/fold-fail1.gif';
+import foldFail2 from './img/tutorial/fold-fail2.gif';
+
 
 
 class Tutorial extends Component {
