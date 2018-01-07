@@ -14,10 +14,10 @@ import {
 
 
 const aminoConfigs = new Map([
-    ["HPHHPPHP", -2],
-    ["HPHPHPHPHPHH", -3],
-    ["PHHHHPPPPPPHHHHHHH", -6],
-    ["HHPPHPPHPPHPPHPPHPPHPPHH", -9]
+    ["HPHHPPHP", 2],
+    ["HPHPHPHPHPHH", 3],
+    ["PHHHHPPPPPPHHHHHHH", 6],
+    ["HHPPHPPHPPHPPHPPHPPHPPHH", 9]
 ]);
 
 class Options extends Component {
@@ -122,7 +122,7 @@ class FoldingBoard extends Component {
             selectedAmino: "",  // coords are as string, "x-y"
             rotationAmino: "",
             score: findHHContact(r[0]).length,
-            optimalScore: -2
+            optimalScore: 2
         };
     }
 
@@ -141,7 +141,7 @@ class FoldingBoard extends Component {
             score: {$set: 0},
             optimalScore: {
                 $set: optimalScore === "previous" ?
-                    this.state.optimalScore : optimalScore || ' ≤ -' + calculateHHUpperBound(newAminoString)
+                    this.state.optimalScore : optimalScore || ' ≤ ' + calculateHHUpperBound(newAminoString)
             }
         }))
     }
@@ -310,7 +310,7 @@ class FoldingBoard extends Component {
                      aminoConfigs={aminoConfigs}/>
             {this.createGrid(this.state.gridSize)}
             <div id="scorebox">
-                Current energy score: {this.state.score > 0 ? -this.state.score : this.state.score}
+                Current energy score: {this.state.score}
                 <br/>
                 <span>Maximum energy score: {this.state.optimalScore}</span>
             </div>
