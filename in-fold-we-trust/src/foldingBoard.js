@@ -13,6 +13,13 @@ import {
 } from './foldUtils.js';
 
 
+const aminoConfigs = new Map([
+    ["HPHHPPHP", -2],
+    ["HPHPHPHPHPHH", -3],
+    ["PHHHHPPPPPPHHHHHHH", -6],
+    ["HHPPHPPHPPHPPHPPHPPHPPHH", -9]
+]);
+
 class Options extends Component {
     constructor() {
         super();
@@ -295,10 +302,7 @@ class FoldingBoard extends Component {
             "--normal-cell-len": normalCellLen + "px",
             "--small-cell-len": smallCellLen + "px"
         };
-        let aminoConfigs = new Map([
-            ["HPHHPPHP", -2],
-            ["PHHHHPPPPPPHHHHHHH", -6]
-        ]);
+
         return <div id="board-wrapper" style={dynamicStyle}>
             <Options resetCallback={this.resetConfig}
                      changeAminoStringCallback={this.resetConfig}
