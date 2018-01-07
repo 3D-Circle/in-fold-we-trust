@@ -17,10 +17,9 @@ button {
     text-decoration: none;
 }
 
-
 button:hover {
-  background: #3cb0fd;
-  text-decoration: none;
+    background: #3cb0fd;
+    text-decoration: none;
 }
 
 /* content */
@@ -47,7 +46,6 @@ div#menu {
     background: lightblue;
 }
 
-
 /* ----------
    modals
 */
@@ -71,9 +69,7 @@ div#menu {
     margin: 10px;
 }
 
-
 /* --- Folding Board --- */
-
 
 #options {
     padding: 10px;
@@ -155,7 +151,7 @@ div#board-wrapper {
 }
 
 .td.empty {
-    width: var(--small-cell-len);  /* to compensate for border */
+    width: var(--small-cell-len); /* to compensate for border */
     height: 17px;
 }
 
@@ -199,31 +195,32 @@ div.link.active {
     width: var(--small-cell-len);
     height: 5px;
     position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .td.tall > .link.hh-bond {
     width: 5px;
     background: repeating-linear-gradient(
-      transparent,
-      transparent 1px,
-      black 1px,
-      black 2px
+            transparent,
+            transparent 1px,
+            black 1px,
+            black 2px
     );
 }
 
 .td.wide > .link.hh-bond {
     height: 5px;
     background: repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 1px,
-      black 1px,
-      black 2px
+            90deg,
+            transparent,
+            transparent 1px,
+            black 1px,
+            black 2px
     );
 }
- 
+
 /* ----------
    folding indicators 
 */
@@ -236,7 +233,6 @@ div.link.active {
     /*TODO Find color for folding indicator*/
     background: lightblue;
 }
-
 
 /* ----------
    stuff at the bottom
