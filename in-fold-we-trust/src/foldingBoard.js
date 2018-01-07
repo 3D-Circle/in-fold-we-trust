@@ -138,7 +138,7 @@ class FoldingBoard extends Component {
             aminoCoordMap: {$set: r[0]},
             grid: {$set: r[1]},
             gridSize: {$set: r[1].length},
-            score: 0,
+            score: {$set: 0},
             optimalScore: {
                 $set: optimalScore === "previous" ?
                     this.state.optimalScore : optimalScore || ' ≤ -' + calculateHHUpperBound(newAminoString)
