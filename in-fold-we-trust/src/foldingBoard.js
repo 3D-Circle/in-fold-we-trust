@@ -123,7 +123,7 @@ class FoldingBoard extends Component {
         let r = configFromSequence(newAminoString);
         if (newAminoString.replace(/H/g, '').replace(/P/g, '')) {
             // TODO improve warning
-            alert("Cannot read custom input: HP string contains characters other than 'H' and 'P'.");
+            window.alert("Cannot read custom input: HP string contains characters other than 'H' and 'P'.");
             return
         }
         this.setState(update(this.state, {
@@ -153,9 +153,9 @@ class FoldingBoard extends Component {
                 this.state.aminoCoordMap, this.state.selectedAmino
             );
             if (coords === this.state.selectedAmino) {
-                alert(
+                window.alert(
                     "Rotation amino cannot be the same as origin." +
-                    "\nIf you want to cancel the operation, click anywhere on the empty grid." +
+                    "\nIf you want to cancel the operation, click on an empty cell" +
                     "\nIf you're confused, check out the tutorial."
                 );
             } else if (neighbourAminos.includes(coords) === false) {
