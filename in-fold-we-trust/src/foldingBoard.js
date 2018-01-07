@@ -264,17 +264,14 @@ class FoldingBoard extends Component {
                     const isHHContact = HHs.includes(`${x}-${y}`);
 
                     tds.push(
-                        <div key={"" + x + "-" + y}  // PFF MAKE AN EFFORT TO MAKE KEYS UNIQUE OK? OUAIS
-                             className={`td aa-link ${orientationClass}`}
-                             onClick={this.resetToNormalState}>
+                        <div key={"" + x + "-" + y}
+                             className={`td aa-link ${orientationClass}`}>
                             <div className={`link ${linkIsActive ? "active" : ""} ${isHHContact ? "hh-bond" : "" }`}/>
                         </div>
                     );
                 } else {
                     tds.push(<div key={"" + x + "-" + y}
-                                  className="td empty"
-                                  onClick={this.resetToNormalState}
-                    />);
+                                  className="td empty"/>);
                 }
                 return tds;
             });
