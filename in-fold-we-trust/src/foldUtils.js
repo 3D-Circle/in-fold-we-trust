@@ -281,11 +281,19 @@ function calculateHHUpperBound(seq) {
         return 0
     }
     const AAChain = Array.from(seq);
-    const evenHs = AAChain.filter((type, i) => type === 'H' && i % 2);
-    const oddHs = AAChain.filter((type, i) => type === 'H' && !(i % 2));
+    const evenHs = AAChain.filter((type, i) => type === 'H' && !(i % 2));
+    const oddHs = AAChain.filter((type, i) => type === 'H' && (i % 2));
     let optimalHHContacts = 2 * Math.min(evenHs.length, oddHs.length);
-    if ((AAChain[0] === 'H' || AAChain[AAChain.length] === 'H') && AAChain.length >= 8) {
-        optimalHHContacts += 1;
+    if (AAChain.length >= 8 && evenHs.length + oddHs.length >= 4) {
+        if (AAChain[0] === 'H') {
+            if (oddHs.length >= 3) {
+                optimalHHContacts += 1;
+            }
+        } else if (AAChain[AAChain.length - 1] === 'H') {
+            if ((AAChain.length % 2 ? evenHs : oddHs).length >= 3) {
+                optimalHHContacts += 1;
+            }
+        }
     }
     return optimalHHContacts
 }
