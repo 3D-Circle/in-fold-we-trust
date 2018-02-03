@@ -13,7 +13,7 @@ class Menu extends Component {
         this.state = {
             tutorialOpen: false,
             explanationOpen: false,
-            language: "CN"
+            language: "EN"
         };
 
         this.toggleModal = this.toggleModal.bind(this);
@@ -27,8 +27,19 @@ class Menu extends Component {
 
     render() {
         return <div id="menu">
-            <button className="menu-item" onClick={() => this.toggleModal("tutorial", true)}>Tutorial</button>
-            <button className="menu-item" onClick={() => this.toggleModal("explanation", true)}>Explanation</button>
+            <button className="menu-item"
+                    onClick={() => this.toggleModal("tutorial", true)}>
+                {this.state.language === 'EN' ? 'Tutorial' : '教程'}
+            </button>
+            <button className="menu-item" onClick={() => this.toggleModal("explanation", true)}>
+                {this.state.language === 'EN' ? 'Explanation' : '说明'}
+            </button>
+            <button className="menu-item"
+                    onClick={() => this.setState(update(this.state,
+                        {language: {$set: this.state.language === 'EN' ? 'CN' : 'EN'}}))}
+            >
+                {this.state.language === 'EN' ? '查看中文版' : 'View English version'}
+            </button>
             <ReactModal isOpen={this.state.tutorialOpen}
                         onRequestClose={() => this.toggleModal("tutorial", false)}>
                 <Tutorial closingCallback={() => this.toggleModal("tutorial", false)}
