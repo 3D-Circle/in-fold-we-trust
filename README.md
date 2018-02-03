@@ -1,7 +1,10 @@
 # HP-Folding
+A CTB project investigating about protein folding (team website: http://ejm.chinathinksbig.org/)
 
-Everything is on the website: https://hp-folding.firebaseapp.com
+## Website
+https://hp-folding.firebaseapp.com
 
+## For the techs
 This project is made all with React. 
 If you know what you're doing and want to tweak the code at home, you'll need git and npm.
 
