@@ -12,7 +12,8 @@ class Menu extends Component {
         super();
         this.state = {
             tutorialOpen: false,
-            explanationOpen: false
+            explanationOpen: false,
+            language: "CN"
         };
 
         this.toggleModal = this.toggleModal.bind(this);
@@ -34,7 +35,8 @@ class Menu extends Component {
             </ReactModal>
             <ReactModal isOpen={this.state.explanationOpen}
                         onRequestClose={() => this.toggleModal("explanation", false)}>
-                <Explanation closingCallback={() => this.toggleModal("explanation", false)}/>
+                <Explanation closingCallback={() => this.toggleModal("explanation", false)}
+                             language={this.state.language}/>
             </ReactModal>
         </div>;
     }
